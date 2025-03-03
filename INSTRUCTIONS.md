@@ -77,12 +77,10 @@ This platform is ideal for developers, researchers, and enthusiasts who want to 
 
 mi-proyecto/ ├── pnpm-workspace.yaml # Workspace configuration for pnpm ├── backend/ # Backend folder │ ├── prisma/ # Prisma schema and migrations │ ├── .env # Environment variables │ ├── index.js # Entry point for the backend │ └── package.json # Backend dependencies and scripts ├── frontend/ # Frontend folder │ ├── src/ # React source code │ ├── public/ # Static assets │ ├── package.json # Frontend dependencies and scripts │ └── vite.config.js # Vite configuration └── INSTRUCTIONS.md # Project documentation
 
-yaml
-Copiar
-Editar
+```yaml
 
 ---
-
+```
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -125,49 +123,45 @@ Copiar
 Editar
 pnpm run dev
 ```
-🛠️ Usage
-Backend
+## 🛠️ Usage
+### Backend
 The backend runs on http://localhost:3000 by default.
 Use tools like Postman or Insomnia to test the APIs.
-Frontend
+### Frontend
 The frontend runs on http://localhost:5173 by default.
 Open the URL in your browser to interact with the app.
-🌐 API Endpoints
+## 🌐 API Endpoints
 /auth/register (POST): Register a new user.
 /auth/login (POST): Authenticate a user.
 /tools (GET): Fetch all tools.
 /tools/favorites (GET): Fetch user's favorite tools.
 /tools/reviews (POST): Add a review for a tool.
-🤝 Contributing
+## 🤝 Contributing
 We welcome contributions from the community! Here’s how you can help:
 
 Fork the repository.
-bash
-Copiar
-Editar
+```bash
 git clone https://github.com/yourusername/ia-tools-platform.git
+```
 Create a new branch:
-bash
-Copiar
-Editar
+```bash
 git checkout -b feature/YourFeatureName
+```
 Commit your changes:
-bash
-Copiar
-Editar
+```bash
 git commit -m "Add some feature"
+```
 Push to the branch:
-bash
-Copiar
-Editar
+```bash
 git push origin feature/YourFeatureName
+```
 Open a pull request.
 For major changes, please open an issue first to discuss what you’d like to change.
 
-📜 License
+## 📜 License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-🙏 Acknowledgments
+## 🙏 Acknowledgments
 Inspired by the growing need for centralized AI tool discovery platforms.
 Built with ❤️ using modern web technologies.
 
