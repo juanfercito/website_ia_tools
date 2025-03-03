@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  users       User[]
+}
+
+model User {
+  id        String      @id @default(cuid())
+  name      String
+  email     String      @unique
+  password  String
+  roleId    String
+  role      Role        @relation(fields: [roleId], references: [id])
+  favorites Favorite[]
+  usageLogs UsageLog[]
+  reviews   Review[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Tool {
+  id          String      @id @default(cuid())
+  name        String
+  description String
+  category    String
+  url         String
+  isPremium   Boolean     @default(false)
+  favorites   Favorite[]
+  usageLogs   UsageLog[]
+  reviews     Review[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Favorite {
+  id      String   @id @default(cuid())
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+  toolId  String
+  tool    Tool     @relation(fields: [toolId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model UsageLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  toolId    String
+  tool      Tool     @relation(fields: [toolId], references: [id])
+  action    String   // Ejemplo: "view", "use"
+  timestamp DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  toolId    String
+  tool      Tool     @relation(fields: [toolId], references: [id])
+  rating    Int      // Ejemplo: 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
