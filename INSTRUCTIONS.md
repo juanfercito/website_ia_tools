@@ -98,30 +98,33 @@ Before you begin, ensure you have the following installed:
 ```bash
 git clone https://github.com/yourusername/ia-tools-platform.git
 cd ia-tools-platform
+```
 Install Dependencies
-bash
-Copiar
-Editar
+```bash
 pnpm install
+```
 Set Up Environment Variables
 Create a .env file in the backend folder and add your database credentials:
 
-env
+```env
 Copiar
 Editar
 DATABASE_URL="mysql://user:password@localhost:3306/ia_tools_db"
 JWT_SECRET="your_jwt_secret"
+```
 Run Database Migrations
-bash
+```bash
 Copiar
 Editar
 cd backend
 npx prisma migrate dev --name init
+```
 Start the Development Server
-bash
+```bash
 Copiar
 Editar
 pnpm run dev
+```
 🛠️ Usage
 Backend
 The backend runs on http://localhost:3000 by default.
