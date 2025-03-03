@@ -24,7 +24,7 @@ Welcome to **IA Tools Platform**, a web application designed to showcase popular
 
 ---
 
-## - 🌟 Overview
+## 🌟 Overview
 
 The **IA Tools Platform** is a full-stack web application that allows users to:
 
@@ -71,10 +71,9 @@ This platform is ideal for developers, researchers, and enthusiasts who want to 
 - **GitHub Actions**: CI/CD pipeline for automated testing and deployment.
 - **Railway / Vercel**: Hosting platforms for production deployment.
 
----
-
 ## 📂 Project Structure
 ```yaml
+---
 mi-proyecto/ ├── pnpm-workspace.yaml # Workspace configuration for pnpm ├── backend/ # Backend folder │ ├── prisma/ # Prisma schema and migrations │ ├── .env # Environment variables │ ├── index.js # Entry point for the backend │ └── package.json # Backend dependencies and scripts ├── frontend/ # Frontend folder │ ├── src/ # React source code │ ├── public/ # Static assets │ ├── package.json # Frontend dependencies and scripts │ └── vite.config.js # Vite configuration └── INSTRUCTIONS.md # Project documentation
 ---
 ```
