@@ -74,18 +74,32 @@ This platform is ideal for developers, researchers, and enthusiasts who want to 
 ## 📂 Project Structure
 ```yaml
 mi-proyecto/
-├── pnpm-workspace.yaml        # Workspace configuration for pnpm
-├── backend/                   # Backend folder
-│   ├── prisma/                # Prisma schema and migrations
-│   ├── .env                   # Environment variables
-│   ├── index.js               # Entry point for the backend
-│   └── package.json           # Backend dependencies and scripts
-├── frontend/                  # Frontend folder
-│   ├── src/                   # React source code
-│   ├── public/                # Static assets
-│   ├── package.json           # Frontend dependencies and scripts
-│   └── vite.config.js         # Vite configuration
-└── INSTRUCTIONS.md            # Project documentation
+├── pnpm-workspace.yaml           # Global Workspace configuration for pnpm
+├── backend/                      # Backend folder
+│   ├── prisma/                   # Prisma schema and migrations
+│   ├── src/                      # Backend source code (TypeScript)
+│   │    ├── controllers/         # Business Logic (controllers)
+│   │    ├── middlewares/         # Custom Middlewares
+│   │    │   └── errorHandler.ts    # Custom error handler
+│   │    ├── routes/              # API routes
+│   │    │   └── auth.routes.ts     # Authentication Related Routes
+│   │    ├── services/            # Related Services
+│   │    │   └── auth.service.ts    # Auth related services
+│   │    ├── types/               # Related Types 
+│   │    │   └── auth.types.ts      # Auth related types
+│   │    ├── utils/               # Auxiliar Functions
+│   │    ├── app.ts               # Express Main Cofiguration
+│   │    └── server.ts            # Server Entry Point
+│   ├── .env                      # Environment variables
+│   ├── .gitignore                # Ignored files and directories
+│   ├── package.json              # Backend dependencies and scripts
+│   └── tsconfig.json             # Typescript Configuration
+├── frontend/                     # Frontend folder
+│   ├── src/                      # React source code
+│   ├── public/                   # Static assets
+│   ├── package.json              # Frontend dependencies and scripts
+│   └── vite.config.js            # Vite configuration
+└── INSTRUCTIONS.md               # Project documentation
 
 ```
 ## 🚀 Getting Started
