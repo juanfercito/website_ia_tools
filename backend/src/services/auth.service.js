@@ -1,7 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { SALTROUNDS, JWT_SECRET } = require('../config');
+const { SALTROUNDS, JWT_SECRET_KEY } = require('../config');
 
 const {
   validateRequiredFields,
@@ -84,7 +84,7 @@ const loginUser = async ({ email, password }) => {
   // Create a JWT token
   const token = jwt.sign(
     { userId: user.id, email: user.email, role: user.roleId },
-    JWT_SECRET,
+    JWT_SECRET_KEY,
     { expiresIn: '1h' }
   );
 

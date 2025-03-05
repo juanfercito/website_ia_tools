@@ -1,4 +1,4 @@
-
+// Imports
 const express = require('express');
 const { registerUser, loginUser } = require('../services/auth.service');
 const { 
@@ -9,65 +9,61 @@ const {
   validatePassword 
 } = require('../middlewares/authValidation');
 
+// Initialize router for the app.js
 const router = express.Router();
 
-// Ruta POST para registrar un usuario
+// Route for registering a new user
 router.post('/register', async (req, res) => {
   try {
     const { name, username, email, password } = req.body;
 
-    // Validar los datos de entrada
+    // Validate required fields
     validateRequiredFields({ name, username, email, password }, ['name', 'username', 'email', 'password']);
     validateName(name);
     validateUsername(username);
     validateEmail(email);
     validatePassword(password);
 
-    // Registrar el usuario
+    // Register new user
     const newUser = await registerUser({ name, username, email, password });
 
-    // Devolver respuesta exitosa
     return res.status(201).json({
       message: 'User registration successful',
       user: { name, username, email },
     });
   } catch (error) {
-    // Manejar errores específicos
+    // Specific Error handling
     if (error instanceof Error) {
       return res.status(400).json({ message: error.message });
     }
 
-    // Manejar errores inesperados
+    // Unexpected error handling
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
-// Ruta POST para iniciar sesión
+// Route POST pfor Login User
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validar los datos de entrada
     validateRequiredFields({ email, password }, ['email', 'password']);
     validateEmail(email);
     validatePassword(password);
 
-    // Iniciar sesión
     const { token, user } = await loginUser({ email, password });
 
-    // Devolver respuesta exitosa
     return res.status(200).json({
       message: 'Login successful',
       token,
       user,
     });
   } catch (error) {
-    // Manejar errores específicos
+  
     if (error instanceof Error) {
       return res.status(400).json({ message: error.message });
     }
 
-    // Manejar errores inesperados
     return res.status(500).json({ message: 'Internal Server Error' });
   }
 });

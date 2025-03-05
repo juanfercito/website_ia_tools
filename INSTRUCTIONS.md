@@ -72,35 +72,52 @@ This platform is ideal for developers, researchers, and enthusiasts who want to 
 - **Railway / Vercel**: Hosting platforms for production deployment.
 
 ## 📂 Project Structure
+### Main Folder:
 ```yaml
-mi-proyecto/
+my-project/
 ├── pnpm-workspace.yaml           # Global Workspace configuration for pnpm
 ├── backend/                      # Backend folder
-│   ├── prisma/                   # Prisma schema and migrations
-│   ├── src/                      # Backend source code (TypeScript)
-│   │    ├── controllers/         # Business Logic (controllers)
-│   │    ├── middlewares/         # Custom Middlewares
-│   │    │   └── errorHandler.ts    # Custom error handler
-│   │    ├── routes/              # API routes
-│   │    │   └── auth.routes.ts     # Authentication Related Routes
-│   │    ├── services/            # Related Services
-│   │    │   └── auth.service.ts    # Auth related services
-│   │    ├── types/               # Related Types 
-│   │    │   └── auth.types.ts      # Auth related types
-│   │    ├── utils/               # Auxiliar Functions
-│   │    ├── app.ts               # Express Main Cofiguration
-│   │    └── server.ts            # Server Entry Point
-│   ├── .env                      # Environment variables
-│   ├── .gitignore                # Ignored files and directories
-│   ├── package.json              # Backend dependencies and scripts
-│   └── tsconfig.json             # Typescript Configuration
 ├── frontend/                     # Frontend folder
-│   ├── src/                      # React source code
-│   ├── public/                   # Static assets
-│   ├── package.json              # Frontend dependencies and scripts
-│   └── vite.config.js            # Vite configuration
 └── INSTRUCTIONS.md               # Project documentation
 
+```
+### Backend Folder:
+```yaml
+backend/                          # Backend folder
+├── prisma/                       # Prisma schema and migrations
+├── src/                          # Backend source code (TypeScript)
+│    ├── controllers/             # Business Logic (controllers)
+│    ├── handlers/                # Registration handlers
+│    │   └── auth.handler.js        # Registration fields Validation
+│    ├── middlewares/             # Custom Middlewares
+│    │   ├── authValidation.js      # Authentication related
+│    │   └── errorHandler.js        # Custom error handler
+│    ├── routes/                  # API routes
+│    │   └── auth.routes.js         # Authentication Related Routes
+│    ├── middlewares/             # Custom Middlewares
+│    │   ├── authValidation.js      # Authentication related
+│    │   └── errorHandler.js        # Custom error handler
+│    ├── services/                # Related Services
+│    │   └── auth.service.js        # Auth related services
+│    ├── types/                   # Related Types 
+│    │   └── auth.types.js          # Auth related types
+│    ├── utils/                   # Auxiliar Functions
+│    ├── app.js                   # Express Main Cofiguration
+│    ├── config.js                # Protected Resources Config
+│    └── server.js                # Server Entry Point
+├── .env                          # Environment variables
+├── .gitignore                    # Ignored files and directories
+├── nodemon.json                  # Refresh Server configuration
+├── package.json                  # Backend dependencies and scripts
+└── tsconfig.json                 # Typescript Configuration
+```
+### Frontend Folder:
+```yaml
+frontend/                         # Frontend folder
+├── src/                          # React source code
+├── public/                       # Static assets
+├── package.json                  # Frontend dependencies and scripts
+└── vite.config.js                # Vite configuration
 ```
 ## 🚀 Getting Started
 
