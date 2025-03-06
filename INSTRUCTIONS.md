@@ -140,11 +140,12 @@ Install Dependencies
 pnpm install
 ```
 Set Up Environment Variables
-Create a .env file in the backend folder and add your database credentials:
+Create a .env file in the backend folder and add your database credentials and other environment variables for your application:
 
 ```env
 DATABASE_URL="mysql://user:password@localhost:3306/ia_tools_db"
-JWT_SECRET="your_jwt_secret"
+
+JWT_SECRET_KEY="your_jwt_secret_key"
 ```
 Run Database Migrations
 ```bash

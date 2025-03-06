@@ -2,6 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { SALTROUNDS, JWT_SECRET_KEY } = require('../config');
+const redisClient = require('../config/redis');
 
 const {
   validateRequiredFields,
@@ -72,7 +73,7 @@ const loginUser = async ({ email, password }) => {
   // Find if the user is already registered
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    throw new Error('Invalid credentials');
+    throw new Error('User is not registered');
   }
 
   // Compare the password with the hash stored in the database
@@ -88,9 +89,17 @@ const loginUser = async ({ email, password }) => {
     { expiresIn: '1h' }
   );
 
+  // Create a Refresh token
+  const refreshToken = jwt.sign(
+    { userId: user.id},
+    JWT_SECRET_KEY,
+    { expiresIn: '7d' }
+  );
+
   // Return the token and the user data
   return {
     token,
+    refreshToken,
     user: {
       name: user.name,
       email: user.email,
@@ -100,7 +109,35 @@ const loginUser = async ({ email, password }) => {
   };
 };
 
+const changePassword = async (userId, oldPassword, newPassword) => {
+  // Buscar al usuario en la base de datos
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // Comparar la contraseña antigua con el hash almacenado
+  const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+  if (!isPasswordValid) {
+    throw new Error('Invalid old password');
+  }
+
+  // Hashear la nueva contraseña
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+  // Actualizar la contraseña en la base de datos
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashedPassword },
+  });
+
+  // Invalidar todos los Refresh Tokens del usuario
+  await redisClient.set(`user:${userId}:invalidate`, 'true', 'EX', 60 * 60 * 24); // Expira en 1 día
+
+  return { message: 'Password changed successfully' };
+};
 module.exports = {
   registerUser,
   loginUser,
+  changePassword,
 };
