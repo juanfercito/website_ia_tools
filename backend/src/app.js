@@ -2,17 +2,23 @@
 require('dotenv').config();
 const express = require('express');
 const authRoutes = require('./routes/auth.routes');
-const errorHandler = require('./middlewares/errorHandler');
+const errorHandler = require('./handlers/errorHandler');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET_KEY } = require('./config');
 
 const app = express();
 
-// Middlewares for parsing JSON and cookies
+// Middlewares for parsing JSON, Security and cookies
 app.use(express.json());
 app.use(cookieParser());
-app.use((req, res, next) => {
+app.use(
+    cors({
+        origin: "http://localhost:4000", // Allows requests from the Frontend
+        credentials: true, // Enable credentials and cookies for requests
+    }));
+app.use((err, req, res, next) => {
     const token = req.cookies.access_token;
 
     if (token) {
@@ -21,6 +27,7 @@ app.use((req, res, next) => {
             req.user = data;
         } catch (error) {
             console.error('Error verifying token', error.message);
+            res.status(500).json({status: "error", message: error.message});
         }
     }
     next();

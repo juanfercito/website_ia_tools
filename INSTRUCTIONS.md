@@ -113,11 +113,25 @@ backend/                          # Backend folder
 ```
 ### Frontend Folder:
 ```yaml
-frontend/                         # Frontend folder
-├── src/                          # React source code
-├── public/                       # Static assets
-├── package.json                  # Frontend dependencies and scripts
-└── vite.config.js                # Vite configuration
+frontend/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── Navbar.jsx
+│   │   └── Footer.jsx
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── Register.jsx
+│   │   ├── ForgotPassword.jsx
+│   │   └── Dashboard.jsx
+│   ├── services/
+│   │   └── api.js
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── package.json
+└── vite.config.js
 ```
 ## 🚀 Getting Started
 

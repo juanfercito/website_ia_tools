@@ -1,180 +1,78 @@
-// Imports
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET_KEY } = require('../config');
-const { registerUser, loginUser, changePassword } = require('../services/auth.service');
-const { 
-  validateRequiredFields, 
-  validateName, 
-  validateUsername, 
-  validateEmail, 
-  validatePassword 
-} = require('../middlewares/authValidation');
-const {addToBlacklist} = require('../middlewares/blacklist');
-const { authenticateUser } = require('../middlewares/authJwtUser');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const { onlyUser, onlyAdmin} = require('../middlewares/authorization');
+const { login, register } = require('../controllers/auth.controllers')
 
-// Initialize router for the app.js
+dotenv.config();
+
 const router = express.Router();
 
-// Route for registering a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { name, username, email, password } = req.body;
-
-    // Validate required fields
-    validateRequiredFields({ name, username, email, password }, ['name', 'username', 'email', 'password']);
-    validateName(name);
-    validateUsername(username);
-    validateEmail(email);
-    validatePassword(password);
-
-    // Register new user
-    const newUser = await registerUser({ name, username, email, password });
-
-    return res.status(201).json({
-      message: 'User registration successful',
-      user: { name, username, email },
-    });
-  } catch (error) {
-    // Specific Error handling
-    if (error instanceof Error) {
-      return res.status(400).json({ message: error.message });
-    }
-
-    // Unexpected error handling
-    return res.status(500).json({ message: 'Internal Server Error' });
-  }
+router.post("/login", login, (req, res) => {
+  // Lógica de login aquí
+  res.send("Login route");
 });
 
-// Route POST for Login User
-router.post('/login', async (req, res) => {
+router.post("/register", register, (req, res) => {
+  // Lógica de registro aquí
+  res.send("Register route");
+});
+
+router.post("/logout", (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    validateRequiredFields({ email, password }, ['email', 'password']);
-    validateEmail(email);
-    validatePassword(password);
-
-    const { token, refreshToken, user } = await loginUser({ email, password });
-
-    res.cookie('refresh_token', refreshToken, {
-      expires: new Date(Date.now() + 3600000), // 1 hour
+    // Limpiar la cookie JWT
+    res.clearCookie("jwt", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Only set secure cookies in production
-      sameSite: 'strict', // Only set SameSite cookies in the same site
-      maxAge:7*24*60*60*1000, // 7 days
-    })
+      secure: process.env.NODE_ENV === "production", // Solo en producción si usas HTTPS
+      sameSite: "lax",
+      path: "/", // Debe coincidir con el path usado al configurar la cookie
+    });
 
-    return res.status(200).json ({
-      message: 'Login successful',
-      token,
+    // Responder con éxito
+    return res.json({ status: "ok", message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Error during logout:", error);
+    return res.status(500).json({ status: "error", message: "Internal server error" });
+  }
+});
+
+// Access routes for authenticated users
+router.get("/me", onlyUser, (req, res) => {
+  try {
+    const user = req.user; // El middleware `onlyUser` ya adjuntó el usuario al objeto de solicitud
+    return res.json({
+      status: "ok",
       user: {
+        id: user.id,
         name: user.name,
-        username: user.username,
         email: user.email,
-      } 
-    })
-  } catch (error) {
-  
-    if (error instanceof Error) {
-      return res.status(401).json({ message: error.message });
-    }
-
-    return res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
-
-// Refresh the token
-router.post('/refresh-token', async (req, res) => {
-  try {
-    const refreshToken = req.cookies.refresh_token;
-
-    if (!refreshToken) {
-      return res.status(401).json({ message: 'Unauthorized: Missing refresh token' });
-    }
-
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY);
-
-    // Generate a new Access Token
-    const newAccessToken = jwt.sign(
-      { userId: decoded.userId },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: '15m' } // 15 minutos
-    );
-
-    return res.status(200).json({
-      message: 'Access token refreshed successfully',
-      accessToken: newAccessToken,
+        username: user.username,
+        role: user.role.name,
+      },
     });
   } catch (error) {
-    console.error('Error refreshing token:', error.message);
-    return res.status(401).json({ message: 'Unauthorized: Invalid refresh token' });
+    console.error("Error fetching admin data:", error);
+    return res.status(500).json({ status: "error", message: "Internal server error" });
   }
 });
-
-router.get('/protected', authenticateUser, (req, res) => {
-
+router.get("/admin/me", onlyAdmin, async (req, res) => {
   try {
-    const { username } = req.user;
-    return res.status(200).json({ 
-      message: 'Access Granted',
-      content: {
-        greeting: `Hello ${username}`,
-        description: 'This is a exclusive content for authenticated users'
-      }
-     });
-
-    } catch (error) {
-      console.error('Error verifying token', error.message);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
-
-// Route POST for Logout
-router.post('/logout', async (req, res) => {
-  try {
-
-    const refreshToken = req.cookies.refresh_token;
-
-    if (refreshToken) {
-      await addToBlacklist(refreshToken);
-        // Delete the token cookie from the session
-      res.clearCookie('refresh_token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-      });
-    }
-
-    return res.status(200).json({
-      message: 'Logout successful',
+    const admin = req.user; // El middleware `onlyAdmin` ya adjuntó el usuario al objeto de solicitud
+    return res.json({
+      status: "ok",
+      admin: {
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        username: admin.username,
+        role: admin.role.name,
+      },
     });
   } catch (error) {
-    console.error('Error during logout:', error.message);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    console.error("Error fetching admin data:", error);
+    return res.status(500).json({ status: "error", message: "Internal server error" });
   }
 });
 
-// Route POST for Change Password
-router.post('/change-password', authenticateUser, async (req, res) => {
-  try {
-    const { oldPassword, newPassword } = req.body;
-    const userId = req.user.userId;
-
-    // Validate old password
-    if (!oldPassword || !newPassword) {
-      return res.status(400).json({ message: 'Old and new passwords are required' });
-    }
-
-    // Change password
-    const result = await changePassword(userId, oldPassword, newPassword);
-
-    return res.status(200).json(result);
-  } catch (error) {
-    if (error instanceof Error) {
-      return res.status(400).json({ message: error.message });
-    }
-    return res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
+// Exportar el enrutador
 module.exports = router;
