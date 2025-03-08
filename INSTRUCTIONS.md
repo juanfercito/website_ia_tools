@@ -75,32 +75,36 @@ This platform is ideal for developers, researchers, and enthusiasts who want to 
 ### Main Folder:
 ```yaml
 my-project/
-├── pnpm-workspace.yaml           # Global Workspace configuration for pnpm
 ├── backend/                      # Backend folder
 ├── frontend/                     # Frontend folder
-└── INSTRUCTIONS.md               # Project documentation
+├── .gitignore                    # Ignore Global Dependencies
+├── eslint.config.js              # eslint configuration for Autocomplete
+├── package.json                  # Global Package JSON configuration
+├── INSTRUCTIONS.md               # Project documentation
+├── LICENSE                       # License information
+└── pnpm.workspace.yaml           # Execute Project Global Workspace 
 
 ```
 ### Backend Folder:
 ```yaml
 backend/                          # Backend folder
 ├── prisma/                       # Prisma schema and migrations
-├── src/                          # Backend source code (TypeScript)
-│    ├── controllers/             # Business Logic (controllers)
+├── public/                       # Default public files
+├── src/                          # Backend source code 
+│    ├── config/                  # Resources configuration
+│    │   └── redis.js               # Redis configuration for invalid tokens
+│    ├── controllers/             # Custom middlewares and Tokens config
+│    │   └── auth.controllers.js    # Tokens and Cookies Generation
 │    ├── handlers/                # Registration handlers
-│    │   └── auth.handler.js        # Registration fields Validation
+│    │   └── errorHandler.js        # Registration fields Validation
 │    ├── middlewares/             # Custom Middlewares
-│    │   ├── authValidation.js      # Authentication related
-│    │   └── errorHandler.js        # Custom error handler
+│    │   └── authorization.js       # Tokens and Cookies authentication
 │    ├── routes/                  # API routes
 │    │   └── auth.routes.js         # Authentication Related Routes
-│    ├── middlewares/             # Custom Middlewares
-│    │   ├── authValidation.js      # Authentication related
-│    │   └── errorHandler.js        # Custom error handler
-│    ├── services/                # Related Services
-│    │   └── auth.service.js        # Auth related services
-│    ├── types/                   # Related Types 
-│    │   └── auth.types.js          # Auth related types
+│    ├── scripts/                 # Additional scripts for prisma models
+│    │   ├── createAdmin.js         # Seed script for creating Admin user
+│    │   └── createRoles.js         # Seed script for creating roles
+│    ├── services/                # Busines Logic
 │    ├── utils/                   # Auxiliar Functions
 │    ├── app.js                   # Express Main Cofiguration
 │    ├── config.js                # Protected Resources Config
@@ -109,29 +113,35 @@ backend/                          # Backend folder
 ├── .gitignore                    # Ignored files and directories
 ├── nodemon.json                  # Refresh Server configuration
 ├── package.json                  # Backend dependencies and scripts
-└── tsconfig.json                 # Typescript Configuration
+└── pnpm-lock.yaml                # Ts-node configuration
 ```
 ### Frontend Folder:
 ```yaml
 frontend/
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── Navbar.jsx
-│   │   └── Footer.jsx
+├── public/                       # Default public files
+├── src/                          # All application Views and complements
+│   ├── components/               # Reusable components
+│   │   ├── Navbar.tsx
+│   │   └── Footer.tsx
+│   ├── hooks/                    # Custom auth and config hooks
+│   │   └── useAuth.tsx
 │   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── Login.jsx
-│   │   ├── Register.jsx
-│   │   ├── ForgotPassword.jsx
-│   │   └── Dashboard.jsx
-│   ├── services/
-│   │   └── api.js
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
+│   │   ├── auth/                 # Auth main views
+│   │   │   ├── ForgotPassword.tsx
+│   │   │   ├── Login.tsx
+│   │   │   └── Register.tsx
+│   │   ├── user/                 # Authenticated user views
+│   │   │   ├── AdminPanel.tsx
+│   │   │   └── Dashboard.tsx
+│   │   └── Home.jsx
+│   ├── App.css
+│   ├── App.tsx                   # Start Application file
+│   ├── index.css
+│   └── main.tsx                  # Run Root Application file
+├── .gitignore                    # Ignored files and directories
 ├── package.json
-└── vite.config.js
+├── pnpm-lock.yaml                # Ts-node configuration
+└── vite.config.js                # Config type and default features
 ```
 ## 🚀 Getting Started
 
