@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import LogoutButton from '../../components/LogoutButton';
 
 const AdminPanel: React.FC = () => {
   const [username, setUsername] = useState<string>(''); // Nombre de usuario autenticado
@@ -34,30 +35,6 @@ const AdminPanel: React.FC = () => {
     fetchUserData();
   }, [navigate]);
 
-  // Función para cerrar sesión
-  const handleLogout = async () => {
-    try {
-      // Enviar solicitud POST al backend para cerrar sesión
-      const response = await fetch('http://localhost:3000/auth/logout', {
-        method: 'POST',
-        credentials: 'include', // Incluir cookies en la solicitud
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to log out');
-      }
-  
-      // Limpiar el estado local (opcional)
-      console.log('Logged out successfully');
-      alert('Logged out successfully!');
-      navigate('/login'); // Redirigir al login después de cerrar sesión
-    } catch (error) {
-      console.error('Logout failed:', error);
-      alert('Logout failed');
-    }
-  };
-
   // Cerrar el menú al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -84,7 +61,7 @@ const AdminPanel: React.FC = () => {
       {/* Navbar */}
       <nav style={styles.navbar}>
         <div style={styles.navbarLeft}>
-          <span style={styles.logo}>MyIA</span>
+          <span style={styles.logo}>My IATOOLS Panel</span>
         </div>
         <div style={styles.navbarRight}>
           <div style={styles.userSection}>
@@ -108,10 +85,13 @@ const AdminPanel: React.FC = () => {
           </div>
           {isMenuOpen && (
             <div className="dropdown-menu" style={styles.dropdownMenu}>
-              <div style={styles.dropdownItem}>Settings</div>
-              <button onClick={handleLogout} style={styles.dropdownItem}>
-                Logout
-              </button>
+              <Link to="/profile-settings" style={styles.dropdownItem}>
+                Profile
+              </Link>
+              <Link to="/account-settings" style={styles.dropdownItem}>
+                Settings
+              </Link>
+              <LogoutButton />
             </div>
           )}
         </div>
@@ -181,10 +161,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     zIndex: 1000,
   },
   dropdownItem: {
-    padding: '0.5rem',
-    cursor: 'pointer',
-    borderBottom: '1px solid #ccc',
-    color: '#000',
+    display: 'block',
+    paddingInline: '0.5rem',
+    margin: '10px 0',
+    color: '#007BFF',
+    textDecoration: 'none',
   },
   content: {
     flex: 1,

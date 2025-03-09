@@ -133,7 +133,7 @@ frontend/
 │   │   ├── user/                 # Authenticated user views
 │   │   │   ├── AdminPanel.tsx
 │   │   │   └── Dashboard.tsx
-│   │   └── Home.jsx
+│   │   └── Home.tsx
 │   ├── App.css
 │   ├── App.tsx                   # Start Application file
 │   ├── index.css

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Navbar: React.FC = () => {
   return (
     <nav style={styles.navbar}>
-      <div style={styles.logo}>MyIA</div>
+      <div style={styles.logo}>IA TOOLS</div>
       <div style={styles.buttons}>
         <Link to="/login" style={styles.button}>Login</Link>
         <Link to="/register" style={styles.button}>Register</Link>

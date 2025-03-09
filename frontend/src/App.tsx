@@ -6,6 +6,10 @@ import Register from './pages/auth/Register';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import Dashboard from './pages/user/Dashboard';
 import AdminPanel from './pages/user/AdminPanel';
+import ProfileSettings from './pages/user/ProfileSettings';
+import AccountSettings from './pages/user/AccountSettings';
+
+// components
 import Navbar from './components/Navbar';
 
 const App: React.FC = () => {
@@ -24,6 +28,8 @@ const App: React.FC = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin-panel" element={<AdminPanel />} />
+        <Route path="/profile-settings" element={<ProfileSettings />} />
+        <Route path="/account-settings" element={<AccountSettings />} />
       </Routes>
     </>
   );

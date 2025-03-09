@@ -5,7 +5,6 @@ const { PrismaClient } = require("@prisma/client");
 
 dotenv.config();
 
-// Instancia de Prisma
 const prisma = new PrismaClient();
 
 async function login(req, res) {
@@ -75,7 +74,7 @@ async function register(req, res) {
   }
 
   try {
-    // Verificar si el usuario ya existe
+    // Verify if the user already exists
     const existingUser = await prisma.user.findUnique({
       where: { username },
     });
@@ -83,18 +82,27 @@ async function register(req, res) {
       return res.status(400).send({ status: "error", message: "Username already exists" });
     }
 
-    // Encriptar la contraseña
+    // Hash the password
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
 
-    // Crear el usuario en la base de datos
+    // Obtain the default role ("freeUser")
+    const defaultRole = await prisma.role.findUnique({
+      where: { name: "freeUser" }, // Buscar el rol por su nombre
+    });
+
+    if (!defaultRole) {
+      return res.status(500).send({ status: "error", message: "Default role not found" });
+    }
+
+    // Create the new user
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         username,
         password: hashedPassword,
-        roleId: "default-role-id", // Reemplaza esto con el ID del rol "user"
+        roleId: defaultRole.id,
       },
     });
 

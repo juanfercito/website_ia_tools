@@ -4,7 +4,7 @@ import HomeButton from '../../components/HomeButton';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
-    fullname: '',
+    name: '',
     username: '',
     email: '',
     password: '',
@@ -19,9 +19,23 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log('Registering with:', formData);
+      const response = await fetch('http://localhost:3000/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registration failed');
+      }
+  
+      const data = await response.json();
+      console.log('Registration successful:', data);
       alert('Registration successful!');
-      navigate('/login');
+      navigate('/login'); // Redirigir al login después del registro
     } catch (error) {
       console.error('Registration failed:', error);
       alert('Registration failed');
@@ -38,8 +52,8 @@ const Register: React.FC = () => {
         <input
           type="text"
           placeholder="Full Name"
-          name="fullname"
-          value={formData.fullname}
+          name="name"
+          value={formData.name}
           onChange={handleChange}
           required
           style={styles.input}
@@ -82,7 +96,6 @@ const Register: React.FC = () => {
   );
 };
 
-// Tipamos explícitamente los estilos como React.CSSProperties
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     textAlign: 'center',
