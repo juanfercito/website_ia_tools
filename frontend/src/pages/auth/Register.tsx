@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import HomeButton from '../../components/HomeButton';
+import '../styles/authViews.css';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -43,12 +44,12 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className='container'>
       {/* Componente HomeButton */}
       <HomeButton />
       
       <h1>Register</h1>
-      <form onSubmit={handleSubmit} style={styles.form}>
+      <form onSubmit={handleSubmit} className='form'>
         <input
           type="text"
           placeholder="Full Name"
@@ -56,7 +57,7 @@ const Register: React.FC = () => {
           value={formData.name}
           onChange={handleChange}
           required
-          style={styles.input}
+          className='input'
         />
         <input
           type="text"
@@ -65,7 +66,7 @@ const Register: React.FC = () => {
           value={formData.username}
           onChange={handleChange}
           required
-          style={styles.input}
+          className='input'
         />
         <input
           type="email"
@@ -74,7 +75,7 @@ const Register: React.FC = () => {
           value={formData.email}
           onChange={handleChange}
           required
-          style={styles.input}
+          className='input'
         />
         <input
           type="password"
@@ -83,52 +84,17 @@ const Register: React.FC = () => {
           value={formData.password}
           onChange={handleChange}
           required
-          style={styles.input}
+          className='input'
         />
-        <button type="submit" style={styles.button}>Register</button>
+        <button type="submit" className='button'>Register</button>
       </form>
 
-      <div style={styles.section}>
+      <div className='section'>
         <p>Already registered?</p>
-        <Link to="/login" style={styles.link}>Login</Link>
+        <Link to="/login" className='link'>Login</Link>
       </div>
     </div>
   );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    textAlign: 'center',
-    marginTop: '50px',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    maxWidth: '400px',
-    margin: 'auto',
-  },
-  input: {
-    padding: '0.5rem',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-  },
-  button: {
-    padding: '0.5rem',
-    backgroundColor: '#007BFF',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  section: {
-    marginTop: '1rem',
-  },
-  link: {
-    color: '#007BFF',
-    textDecoration: 'none',
-    marginLeft: '0.5rem',
-  },
 };
 
 export default Register;

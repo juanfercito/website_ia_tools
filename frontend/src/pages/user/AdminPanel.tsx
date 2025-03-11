@@ -1,77 +1,63 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LogoutButton from '../../components/LogoutButton';
+import '../styles/userMainPanel';
+import styles from '../styles/userMainPanel';
 
 const AdminPanel: React.FC = () => {
   const [username, setUsername] = useState<string>(''); // Nombre de usuario autenticado
-  const [profilePicture, setProfilePicture] = useState<string>(''); // Foto de perfil
+  const [profilePicture, setProfilePicture] = useState<string>('/default-avatar.png'); // Foto de perfil
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false); // Estado del menú desplegable
   const navigate = useNavigate();
 
-  // Función para obtener los datos del administrador desde el backend
+  // Función para obtener los datos del usuario desde el backend
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await fetch('http://localhost:3000/auth/admin/me', {
           method: 'GET',
-          credentials: 'include', // Incluye las cookies en la solicitud
+          credentials: 'include', // Incluir cookies en la solicitud
         });
-
+  
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Failed to fetch admin data');
         }
-
+  
         const userData = await response.json();
-        setUsername(userData.admin.username || 'Admin'); // Fallback si no hay username
-        setProfilePicture(userData.admin.profilePicture || '/default-avatar.png'); // Fallback si no hay foto
+  
+        // Validar que los datos necesarios estén presentes
+        if (!userData.user || !userData.user.username || !userData.user.profilePicture) {
+          throw new Error('Incomplete user data received from server');
+        }
+  
+        setUsername(userData.user.username);
+        setProfilePicture(userData.user.profilePicture || '/default-avatar.png');
+        console.log("Profile picture URL:", userData.user.profilePicture); // Depuración
       } catch (error) {
         console.error('Error fetching admin data:', error);
-        alert('Failed to load admin data');
+        alert(`Error: ${error}. Please log in again.`);
         navigate('/login'); // Redirige al login si hay un error
       }
     };
-
+  
     fetchUserData();
   }, [navigate]);
-
-  // Cerrar el menú al hacer clic fuera
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const menuButton = document.querySelector('.menu-button');
-      const dropdownMenu = document.querySelector('.dropdown-menu');
-
-      if (
-        isMenuOpen &&
-        menuButton &&
-        !menuButton.contains(event.target as Node) &&
-        dropdownMenu &&
-        !dropdownMenu.contains(event.target as Node)
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isMenuOpen]);
-
   return (
-    <div style={styles.container}>
+    <div style={styles}>
       {/* Navbar */}
       <nav style={styles.navbar}>
         <div style={styles.navbarLeft}>
-          <span style={styles.logo}>My IATOOLS Panel</span>
+          <span style={styles.logo}>My IA Tools</span>
         </div>
         <div style={styles.navbarRight}>
           <div style={styles.userSection}>
             <img
-              src={profilePicture || "https://via.placeholder.com/150"}
+              src={profilePicture || '/default-avatar.png'} // Usar la imagen predeterminada si profilePicture está vacío
               alt="Profile"
               style={styles.profilePicture}
               onError={(e) => {
-                // Si la imagen falla, usamos un ícono predeterminado
-                e.currentTarget.src;
+                e.currentTarget.src = '/default-avatar.png'; // Reemplazar con la imagen predeterminada en caso de error
               }}
             />
             <span style={styles.username}>{username}</span>
@@ -104,74 +90,6 @@ const AdminPanel: React.FC = () => {
       </div>
     </div>
   );
-};
-
-// Estilos
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-  },
-  navbar: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem',
-    backgroundColor: '#282c34',
-    color: 'white',
-  },
-  navbarLeft: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  logo: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-  },
-  navbarRight: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  userSection: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  profilePicture: {
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',
-    marginRight: '1rem',
-  },
-  username: {
-    marginRight: '1rem',
-  },
-  menuButton: {
-    fontSize: '1.5rem',
-    cursor: 'pointer',
-  },
-  dropdownMenu: {
-    position: 'absolute',
-    top: '60px',
-    right: '1rem',
-    backgroundColor: 'white',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    padding: '0.5rem',
-    zIndex: 1000,
-  },
-  dropdownItem: {
-    display: 'block',
-    paddingInline: '0.5rem',
-    margin: '10px 0',
-    color: '#007BFF',
-    textDecoration: 'none',
-  },
-  content: {
-    flex: 1,
-    padding: '1rem',
-    textAlign: 'center',
-  },
 };
 
 export default AdminPanel;

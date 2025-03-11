@@ -1,6 +1,7 @@
 // pages/auth/ForgotPassword.tsx
 import React, { useState } from 'react';
 import HomeButton from '../../components/HomeButton';
+import '../styles/authViews.css';
 
 const ForgotPassword: React.FC = () => {
   const [step, setStep] = useState(1); // Paso actual del proceso
@@ -104,14 +105,14 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className='container'>
       {/* Componente HomeButton */}
       <HomeButton />
 
       <h1>Forgot Password</h1>
 
       {step === 1 && (
-        <form onSubmit={handleSendCode} style={styles.form}>
+        <form onSubmit={handleSendCode} className='form'>
           <p>Enter your email to reset your password.</p>
           <input
             type="email"
@@ -119,18 +120,18 @@ const ForgotPassword: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={styles.input}
+            className='input'
           />
-          <button type="submit" style={styles.button}>
+          <button type="submit" className='button'>
             Send Verification Code
           </button>
-          {error && <p style={styles.error}>{error}</p>}
-          {success && <p style={styles.success}>{success}</p>}
+          {error && <p className='error'>{error}</p>}
+          {success && <p className='success'>{success}</p>}
         </form>
       )}
 
       {step === 2 && (
-        <form onSubmit={handleVerifyCode} style={styles.form}>
+        <form onSubmit={handleVerifyCode} className='form'>
           <p>Enter the verification code sent to your email.</p>
           <input
             type="text"
@@ -138,18 +139,18 @@ const ForgotPassword: React.FC = () => {
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.target.value)}
             required
-            style={styles.input}
+            className='input'
           />
-          <button type="submit" style={styles.button}>
+          <button type="submit" className='button'>
             Verify Code
           </button>
-          {error && <p style={styles.error}>{error}</p>}
-          {success && <p style={styles.success}>{success}</p>}
+          {error && <p className='error'>{error}</p>}
+          {success && <p className='success'>{success}</p>}
         </form>
       )}
 
       {step === 3 && (
-        <form onSubmit={handleChangePassword} style={styles.form}>
+        <form onSubmit={handleChangePassword} className='form'>
           <p>Enter your new password.</p>
           <input
             type="password"
@@ -157,57 +158,17 @@ const ForgotPassword: React.FC = () => {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
-            style={styles.input}
+            className='input'
           />
-          <button type="submit" style={styles.button}>
+          <button type="submit" className='button'>
             Change Password
           </button>
-          {error && <p style={styles.error}>{error}</p>}
-          {success && <p style={styles.success}>{success}</p>}
+          {error && <p className='error'>{error}</p>}
+          {success && <p className='success'>{success}</p>}
         </form>
       )}
     </div>
   );
-};
-
-// Estilos del componente
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    textAlign: 'center',
-    marginTop: '50px',
-    padding: '20px',
-    maxWidth: '400px',
-    margin: 'auto',
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  input: {
-    padding: '0.5rem',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-  },
-  button: {
-    padding: '0.5rem',
-    backgroundColor: '#007BFF',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  error: {
-    color: 'red',
-    marginTop: '10px',
-  },
-  success: {
-    color: 'green',
-    marginTop: '10px',
-  },
 };
 
 export default ForgotPassword;

@@ -1,6 +1,6 @@
 // pages/user/AccountSettings.tsx
 import React, { useState } from 'react';
-import '../styles/AccountSettings.css';
+import '../styles/userSettingsViews.css';
 
 const AccountSettings: React.FC = () => {
   // Estado para el modo oscuro

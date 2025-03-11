@@ -1,7 +1,8 @@
 // pages/auth/Login.tsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import HomeButton from '../../components/HomeButton'; // Importamos el componente
+import HomeButton from '../../components/HomeButton';
+import '../styles/authViews.css';
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -54,12 +55,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className='container'>
       {/* Componente HomeButton */}
       <HomeButton />
 
       <h1>Login</h1>
-      <form onSubmit={handleSubmit} style={styles.form}>
+      <form onSubmit={handleSubmit} className='form'>
         <input
           type="email"
           placeholder="Email"
@@ -67,7 +68,7 @@ const Login: React.FC = () => {
           value={formData.email}
           onChange={handleChange}
           required
-          style={styles.input}
+          className='input'
         />
         <input
           type="password"
@@ -76,65 +77,28 @@ const Login: React.FC = () => {
           value={formData.password}
           onChange={handleChange}
           required
-          style={styles.input}
+          className='input'
         />
-        <button type="submit" style={styles.button}>
+        <button type="submit" className='button'>
           Login
         </button>
       </form>
 
-      <div style={styles.section}>
+      <div className='section'>
         <p>Are not registered yet?</p>
-        <Link to="/register" style={styles.link}>
+        <Link to="/register" className='link'>
           Register
         </Link>
       </div>
 
-      <div style={styles.section}>
+      <div className='section'>
         <p>Forgot password?</p>
-        <Link to="/forgot-password" style={styles.link}>
+        <Link to="/forgot-password" className='link'>
           Recover Password
         </Link>
       </div>
     </div>
   );
-};
-
-// Tipamos explícitamente los estilos como React.CSSProperties
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    textAlign: 'center',
-    marginTop: '50px',
-    position: 'relative', // Necesario para posicionar el ícono
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    maxWidth: '400px',
-    margin: 'auto',
-  },
-  input: {
-    padding: '0.5rem',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-  },
-  button: {
-    padding: '0.5rem',
-    backgroundColor: '#007BFF',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  section: {
-    marginTop: '1rem',
-  },
-  link: {
-    color: '#007BFF',
-    textDecoration: 'none',
-    marginLeft: '0.5rem',
-  },
 };
 
 export default Login;

@@ -8,7 +8,7 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 async function login(req, res) {
-  console.log(req.body);
+  console.log('req.body received', req.body);
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -19,7 +19,7 @@ async function login(req, res) {
     // Buscar al usuario en la base de datos
     const user = await prisma.user.findUnique({
       where: { email },
-      include: { role: true }, // Incluir el rol del usuario
+      include: { role: true, profileImg: true }, // Incluir el rol del usuario
     });
 
     if (!user) {
@@ -38,8 +38,9 @@ async function login(req, res) {
         email: user.email, 
         username: user.username, 
         role: user.role.name,
-        profilePicture: user.profileImgId?.url ||"https://via.placeholder.com/150" },
-      process.env.JWT_SECRET_KEY,
+        profilePicture: user.profileImg?.url ||"https://via.placeholder.com/150" 
+      },
+        process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRATION }
     );
 
@@ -114,7 +115,89 @@ async function register(req, res) {
   }
 }
 
+async function allUsers(req, res) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id }, // Buscar al usuario por su ID
+      include: { role: true, profileImg: true }, // Incluir la relación profileImg
+    });
+
+    if (!user) {
+      return res.status(404).json({ status: "error", message: "User not found" });
+    }
+
+    return res.json({
+      status: "ok",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        role: user.role.name,
+        profilePicture: user.profileImg?.url || "/default-avatar.png", // Devolver la URL de la imagen
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return res.status(500).json({ status: "error", message: "Internal server error" });
+  }
+}
+
+async function adminUser(req, res) {
+  try {
+    const admin = await prisma.user.findUnique({
+      where: { id: req.user.id }, // Buscar al administrador por su ID
+      include: { role: true, profileImg: true }, // Incluir la relación profileImg
+    });
+
+    if (!admin) {
+      return res.status(404).json({ status: "error", message: "Admin not found" });
+    }
+
+    // Validar que los datos necesarios estén presentes
+    if (!admin.name || !admin.email || !admin.username || !admin.role) {
+      return res.status(500).json({ status: "error", message: "Incomplete admin data in database" });
+    }
+
+    return res.json({
+      status: "ok",
+      user: { // Cambiar el nombre del objeto a "user" para coincidir con el frontend
+        id: admin.id,
+        name: admin.name || "Unknown",
+        email: admin.email || "Unknown",
+        username: admin.username || "Unknown",
+        role: admin.role.name || "Unknown",
+        profilePicture: admin.profileImg?.url || "/default-avatar.png", // Devolver la URL de la imagen
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching admin data:", error);
+    return res.status(500).json({ status: "error", message: "Internal server error" });
+  }
+}
+
+async function logout(req, res) {
+  try {
+    // Limpiar la cookie JWT
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Solo en producción si usas HTTPS
+      sameSite: "lax",
+      path: "/", // Debe coincidir con el path usado al configurar la cookie
+    });
+
+    // Responder con éxito
+    return res.json({ status: "ok", message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Error during logout:", error);
+    return res.status(500).json({ status: "error", message: "Internal server error" });
+  }
+}
+
 module.exports = {
   login,
   register,
+  allUsers,
+  adminUser,
+  logout,
 };

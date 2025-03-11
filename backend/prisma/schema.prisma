@@ -21,27 +21,27 @@ model Role {
 }
 
 model User {
-  id          String      @id @default(cuid())
-  name        String
-  email       String      @unique
-  password    String
-  username    String      @unique
-  profileImg  ProfileImg? // Relación sin fields ni references
-  profileImgId String?    @unique // Clave foránea
-  roleId      String
-  role        Role        @relation(fields: [roleId], references: [id])
-  favorites   Favorite[]
-  usageLogs   UsageLog[]
-  reviews     Review[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           String      @id @default(cuid())
+  name         String
+  email        String      @unique
+  password     String
+  username     String      @unique
+  profileImg   ProfileImg? 
+  profileImgId String?     @unique // Clave foránea con índice único
+  roleId       String
+  role         Role        @relation(fields: [roleId], references: [id])
+  favorites    Favorite[]
+  usageLogs    UsageLog[]
+  reviews      Review[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }
 
 model ProfileImg {
-  id        String   @id @default(cuid())
-  url       String   // URL de la imagen
-  user      User     @relation(fields: [userId], references: [id]) // Relación con fields y references
-  userId    String   @unique // Clave foránea
+  id      String   @id @default(cuid())
+  url     String   // URL de la imagen
+  user    User?    @relation(fields: [userId], references: [id]) // Relación opcional
+  userId  String?  @unique // Clave foránea con índice único
 }
 
 model Tool {

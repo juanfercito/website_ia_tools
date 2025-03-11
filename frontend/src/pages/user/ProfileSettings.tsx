@@ -1,11 +1,16 @@
 // pages/user/ProfileSettings.tsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import '../styles/userSettingsViews.css';
+import imageCompression from 'browser-image-compression';
 
 const ProfileSettings: React.FC = () => {
-  const navigate = useNavigate();
 
-  // Estado para almacenar los datos del usuario
+  interface EditableData {
+    name: string;
+    username: string;
+    email: string;
+    profileImg: string | File;
+  }
   const [userData, setUserData] = useState({
     name: 'N/A',
     username: 'N/A',
@@ -13,16 +18,16 @@ const ProfileSettings: React.FC = () => {
     role: 'N/A',
     profileImg: '/default-avatar.png', // Imagen predeterminada
   });
-
-  // Estado para controlar el modo de edición
-  const [isEditing, setIsEditing] = useState(false);
-
-  // Estado temporal para los campos editables
-  const [editableData, setEditableData] = useState({
+  
+  const [editableData, setEditableData] = useState<EditableData>({
     name: '',
     username: '',
     email: '',
+    profileImg: '', // Para manejar la nueva imagen de perfil
   });
+
+  // Estado para controlar el modo de edición
+  const [isEditing, setIsEditing] = useState(false);
 
   // Cargar los datos del usuario desde el backend
   useEffect(() => {
@@ -38,6 +43,7 @@ const ProfileSettings: React.FC = () => {
         }
 
         const data = await response.json();
+        console.log('User data received', data);
         setUserData({
           name: data.user.name || 'N/A',
           username: data.user.username || 'N/A',
@@ -51,6 +57,7 @@ const ProfileSettings: React.FC = () => {
           name: data.user.name || '',
           username: data.user.username || '',
           email: data.user.email || '',
+          profileImg: data.user.profilePicture || '',
         });
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -67,51 +74,132 @@ const ProfileSettings: React.FC = () => {
     setEditableData({ ...editableData, [name]: value });
   };
 
-  // Guardar los cambios en el backend
-  const handleSaveChanges = async () => {
+// Manejar la carga de una nueva imagen de perfil
+const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
     try {
-      const response = await fetch('http://localhost:3000/auth/update-profile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(editableData),
-        credentials: 'include',
-      });
+      // Opciones de compresión
+      const options = {
+        maxSizeMB: 1, // Tamaño máximo de 1 MB
+        maxWidthOrHeight: 1024, // Redimensionar a un máximo de 1024x1024 píxeles
+        useWebWorker: true, // Usar un worker para mejorar el rendimiento
+      };
 
-      if (!response.ok) {
-        throw new Error('Failed to update user data');
-      }
+      // Comprimir la imagen
+      const compressedBlob = await imageCompression(file, options);
 
-      const updatedData = await response.json();
-      setUserData({
-        ...userData,
-        name: updatedData.user.name,
-        username: updatedData.user.username,
-        email: updatedData.user.email,
-      });
+      // Convertir el Blob comprimido en un objeto File
+      const compressedFile = new File(
+        [compressedBlob],
+        file.name, // Mantener el nombre original del archivo
+        { type: file.type } // Mantener el tipo MIME original
+      );
 
-      setIsEditing(false); // Salir del modo de edición
-      alert('Profile updated successfully!');
+      // Actualizar el estado con el archivo comprimido
+      setEditableData({ ...editableData, profileImg: compressedFile });
+      console.log("Imagen comprimida asignada:", compressedFile); // Depuración
     } catch (error) {
-      console.error('Error updating profile:', error);
-      alert('Failed to update profile');
+      console.error("Error compressing image:", error);
+      alert("Failed to compress image");
     }
-  };
+  }
+};
 
+// Renderizar la imagen de perfil
+<img
+  src={
+    typeof editableData.profileImg === 'string'
+      ? editableData.profileImg || userData.profileImg
+      : URL.createObjectURL(editableData.profileImg)
+  }
+  alt="Profile"
+  className='profileImage'
+/>
+
+// Guardar los cambios en el backend
+const handleSaveChanges = async () => {
+  try {
+    // Validar que los campos obligatorios no estén vacíos
+    if (!editableData.name || !editableData.username || !editableData.email) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', editableData.name);
+    formData.append('username', editableData.username);
+    formData.append('email', editableData.email);
+
+    // Agregar la imagen solo si es un archivo válido
+    if (editableData.profileImg instanceof File) {
+      console.log("Archivo adjunto:", editableData.profileImg); // Depuración
+      formData.append('profileImg', editableData.profileImg);
+    }
+
+    // Depuración: Mostrar el contenido de FormData
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    const response = await fetch('http://localhost:3000/user/update-profile', {
+      method: 'PATCH',
+      body: formData,
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update user data');
+    }
+
+    const updatedData = await response.json();
+
+    // Actualizar el estado con los datos actualizados
+    setUserData({
+      ...userData,
+      name: updatedData.user.name,
+      username: updatedData.user.username,
+      email: updatedData.user.email,
+      profileImg: updatedData.user.profilePicture || '/default-avatar.png', // Actualizar la URL de la imagen
+    });
+
+    setIsEditing(false); // Salir del modo de edición
+    alert('Profile updated successfully!');
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    alert('Failed to update profile');
+  }
+};
   return (
-    <div style={styles.container}>
+    <div className='container'>
       <h1>Profile Settings</h1>
 
       {/* Imagen de perfil */}
-      <div style={styles.profileSection}>
-        <img src={userData.profileImg} alt="Profile" style={styles.profileImage} />
+      <div className='profileSection'>
+        <img
+          src={
+            typeof editableData.profileImg === 'string'
+              ? editableData.profileImg || userData.profileImg
+              : URL.createObjectURL(editableData.profileImg)
+          }
+          alt="Profile"
+          className='profileImage'
+        />
         <p>Profile Image</p>
+        {isEditing && (
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ marginTop: '10px' }}
+          />
+        )}
       </div>
 
       {/* Datos del usuario */}
-      <div style={styles.fieldsContainer}>
-        <div style={styles.fieldRow}>
+      <div className='fieldsContainer'>
+        <div className='fieldRow'>
           <label>Name:</label>
           {isEditing ? (
             <input
@@ -119,14 +207,14 @@ const ProfileSettings: React.FC = () => {
               name="name"
               value={editableData.name}
               onChange={handleInputChange}
-              style={styles.inputField}
+              className='inputField'
             />
           ) : (
             <span>{userData.name}</span>
           )}
         </div>
 
-        <div style={styles.fieldRow}>
+        <div className='fieldRow'>
           <label>Username:</label>
           {isEditing ? (
             <input
@@ -134,14 +222,14 @@ const ProfileSettings: React.FC = () => {
               name="username"
               value={editableData.username}
               onChange={handleInputChange}
-              style={styles.inputField}
+              className='inputField'
             />
           ) : (
             <span>{userData.username}</span>
           )}
         </div>
 
-        <div style={styles.fieldRow}>
+        <div className='fieldRow'>
           <label>Email:</label>
           {isEditing ? (
             <input
@@ -149,95 +237,33 @@ const ProfileSettings: React.FC = () => {
               name="email"
               value={editableData.email}
               onChange={handleInputChange}
-              style={styles.inputField}
+              className='inputField'
             />
           ) : (
             <span>{userData.email}</span>
           )}
         </div>
 
-        <div style={styles.fieldRow}>
+        <div className='fieldRow'>
           <label>Role:</label>
           <span>{userData.role}</span>
         </div>
       </div>
 
       {/* Botones de acción */}
-      <div style={styles.buttonContainer}>
+      <div className='buttonContainer'>
         {isEditing ? (
-          <button onClick={handleSaveChanges} style={styles.saveButton}>
+          <button onClick={handleSaveChanges} className='saveButton'>
             Save Changes
           </button>
         ) : (
-          <button onClick={() => setIsEditing(true)} style={styles.editButton}>
+          <button onClick={() => setIsEditing(true)} className='editButton'>
             Edit Profile
           </button>
         )}
       </div>
     </div>
   );
-};
-
-// Estilos del componente
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    textAlign: 'center',
-    marginTop: '50px',
-    padding: '20px',
-    maxWidth: '600px',
-    margin: 'auto',
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  },
-  profileSection: {
-    marginBottom: '20px',
-  },
-  profileImage: {
-    width: '150px',
-    height: '150px',
-    borderRadius: '50%',
-    objectFit: 'cover',
-    marginBottom: '10px',
-  },
-  fieldsContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    marginBottom: '20px',
-  },
-  fieldRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  inputField: {
-    padding: '0.5rem',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    width: '200px',
-  },
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '1rem',
-  },
-  editButton: {
-    padding: '0.5rem 1rem',
-    backgroundColor: '#007BFF',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
-  saveButton: {
-    padding: '0.5rem 1rem',
-    backgroundColor: '#28a745',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  },
 };
 
 export default ProfileSettings;
