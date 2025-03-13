@@ -9,6 +9,10 @@ import AdminPanel from './pages/user/AdminPanel';
 import ProfileSettings from './pages/user/ProfileSettings';
 import AccountSettings from './pages/user/AccountSettings';
 
+
+// styles
+import './App.css';
+
 // components
 import Navbar from './components/Navbar';
 

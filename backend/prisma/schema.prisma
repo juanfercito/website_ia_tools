@@ -27,9 +27,9 @@ model User {
   password     String
   username     String      @unique
   profileImg   ProfileImg? 
-  profileImgId String?     @unique // Clave foránea con índice único
   roleId       String
   role         Role        @relation(fields: [roleId], references: [id])
+  darkMode     Boolean     @default(false)
   favorites    Favorite[]
   usageLogs    UsageLog[]
   reviews      Review[]

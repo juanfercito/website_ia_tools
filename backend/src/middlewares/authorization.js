@@ -27,12 +27,11 @@ async function verifyCookie(req) {
 
     // Decodificar el token JWT
     const decoded = jwt.verify(cookieJWT.slice(4), process.env.JWT_SECRET_KEY);
-    console.log("Decoded JWT payload:", decoded);
 
     // Buscar al usuario en la base de datos
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
-      include: { role: true, profileImg: true },
+      include: { role: true, profileImg: true},
     });
 
     if (!user) {
@@ -53,7 +52,8 @@ async function verifyCookie(req) {
       email: user.email,
       username: user.username,
       role: user.role,
-      profileImg: user.profileImg?.url || 'https://via.placeholder.com/150', // Usar una URL absoluta válida
+      profileImg: user.profileImg?.url || 'https://via.placeholder.com/150',
+      darkMode: user.darkMode || false
     };
 
     console.log("Middleware req.user:", req.user); // Depuración

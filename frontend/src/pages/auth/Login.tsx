@@ -16,11 +16,24 @@ const Login: React.FC = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  interface UserResponse {
+    id: string;
+    name: string;
+    email: string;
+    username: string;
+    role: string;
+    profilePicture: string;
+    darkMode: boolean;
+  }
+  
   interface LoginResponse {
     status: string;
     message: string;
     redirect: string;
+    token: string;
+    user: UserResponse;
   }
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,6 +54,13 @@ const Login: React.FC = () => {
 
       const data: LoginResponse = await response.json();
       console.log('Login successful:', data);
+
+      // Suponiendo que data.user.darkMode está presente
+      if (data.user.darkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
 
       alert('Login successful!');
       navigate(data.redirect); // Redirigir según la respuesta del backend

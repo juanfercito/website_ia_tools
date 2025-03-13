@@ -1,43 +1,47 @@
 require('dotenv').config();
+const helmet = require('helmet');
 const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+
+// Importa las rutas y el handler de errores
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
 const errorHandler = require('./handlers/errorHandler');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const path = require('path');
 
 const app = express();
 
-// Middlewares for parsing JSON, Security and cookies
+// Middlewares para seguridad, parsing y cookies
+app.use(cors({
+  origin: "http://localhost:4000", // Origen del frontend
+  credentials: true,              // Habilita credenciales (cookies)
+}));
+
+// Agregar headers CORS explícitos para la ruta /uploads
+const uploadsPath = path.join(__dirname, 'public', 'uploads');
+app.use('/uploads', (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:4000");
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+}, express.static(uploadsPath));
+
+// Middlewares globales
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-    cors({
-        origin: "http://localhost:4000", // Allows requests from the Frontend
-        credentials: true, // Enable credentials and cookies for requests
-    }));
 
-app.use('/auth', authRoutes); // Routes for authentication
-app.use('/user', userRoutes); // Routes for authenticated users
-app.use(errorHandler); // Middleware for error handling
+// Rutas de la aplicación
+app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
+app.use(errorHandler);
 
-// Service for static elements and files
-console.log('Serving static files from:', path.join(__dirname, 'public/uploads'));
-const uploadsPath = path.join(__dirname, 'public', 'uploads');
-app.use('/uploads', express.static(uploadsPath));
-
+// Ruta base de prueba
 app.get('/', (req, res) => {
-    const user = req.user;
-    res.json({ message: 'Welcome to the API', user });
-    user: user || null
-})
+  const user = req.user;
+  res.json({ message: 'Welcome to the API', user: user || null });
+});
 
-app.use("/uploads", (req, res, next) => {
-    console.log("Acceso a archivos estáticos:", req.path);
-    next();
-  });
-  
+module.exports = app;
 
 module.exports = app;

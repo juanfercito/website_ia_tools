@@ -4,13 +4,13 @@ import '../styles/userSettingsViews.css';
 import imageCompression from 'browser-image-compression';
 
 const ProfileSettings: React.FC = () => {
-
   interface EditableData {
     name: string;
     username: string;
     email: string;
     profileImg: string | File;
   }
+
   const [userData, setUserData] = useState({
     name: 'N/A',
     username: 'N/A',
@@ -18,7 +18,7 @@ const ProfileSettings: React.FC = () => {
     role: 'N/A',
     profileImg: '/default-avatar.png', // Imagen predeterminada
   });
-  
+
   const [editableData, setEditableData] = useState<EditableData>({
     name: '',
     username: '',
@@ -74,103 +74,93 @@ const ProfileSettings: React.FC = () => {
     setEditableData({ ...editableData, [name]: value });
   };
 
-// Manejar la carga de una nueva imagen de perfil
-const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (file) {
+  // Manejar la carga de una nueva imagen de perfil
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        // Opciones de compresión
+        const options = {
+          maxSizeMB: 1, // Tamaño máximo de 1 MB
+          maxWidthOrHeight: 1024, // Redimensionar a un máximo de 1024x1024 píxeles
+          useWebWorker: true, // Usar un worker para mejorar el rendimiento
+        };
+
+        // Comprimir la imagen
+        const compressedBlob = await imageCompression(file, options);
+
+        // Convertir el Blob comprimido en un objeto File
+        const compressedFile = new File(
+          [compressedBlob],
+          file.name, // Mantener el nombre original del archivo
+          { type: file.type } // Mantener el tipo MIME original
+        );
+
+        // Actualizar el estado con el archivo comprimido
+        setEditableData({ ...editableData, profileImg: compressedFile });
+        console.log("Imagen comprimida asignada:", compressedFile); // Depuración
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        alert("Failed to compress image");
+      }
+    }
+  };
+
+  // Guardar los cambios en el backend
+  const handleSaveChanges = async () => {
     try {
-      // Opciones de compresión
-      const options = {
-        maxSizeMB: 1, // Tamaño máximo de 1 MB
-        maxWidthOrHeight: 1024, // Redimensionar a un máximo de 1024x1024 píxeles
-        useWebWorker: true, // Usar un worker para mejorar el rendimiento
-      };
+      // Validar que los campos obligatorios no estén vacíos
+      if (!editableData.name || !editableData.username || !editableData.email) {
+        alert("Please fill in all required fields.");
+        return;
+      }
 
-      // Comprimir la imagen
-      const compressedBlob = await imageCompression(file, options);
+      const formData = new FormData();
+      formData.append('name', editableData.name);
+      formData.append('username', editableData.username);
+      formData.append('email', editableData.email);
 
-      // Convertir el Blob comprimido en un objeto File
-      const compressedFile = new File(
-        [compressedBlob],
-        file.name, // Mantener el nombre original del archivo
-        { type: file.type } // Mantener el tipo MIME original
-      );
+      // Agregar la imagen solo si es un archivo válido
+      if (editableData.profileImg instanceof File) {
+        console.log("Archivo adjunto:", editableData.profileImg); // Depuración
+        formData.append('profileImg', editableData.profileImg);
+      }
 
-      // Actualizar el estado con el archivo comprimido
-      setEditableData({ ...editableData, profileImg: compressedFile });
-      console.log("Imagen comprimida asignada:", compressedFile); // Depuración
+      // Depuración: Mostrar el contenido de FormData
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const response = await fetch('http://localhost:3000/user/update-profile', {
+        method: 'PATCH',
+        body: formData,
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update user data');
+      }
+
+      const updatedData = await response.json();
+
+      // Actualizar el estado con los datos actualizados
+      setUserData({
+        ...userData,
+        name: updatedData.user.name,
+        username: updatedData.user.username,
+        email: updatedData.user.email,
+        profileImg: updatedData.user.profilePicture || '/default-avatar.png', // Actualizar la URL de la imagen
+      });
+
+      setIsEditing(false); // Salir del modo de edición
+      alert('Profile updated successfully!');
     } catch (error) {
-      console.error("Error compressing image:", error);
-      alert("Failed to compress image");
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile');
     }
-  }
-};
+  };
 
-// Renderizar la imagen de perfil
-<img
-  src={
-    typeof editableData.profileImg === 'string'
-      ? editableData.profileImg || userData.profileImg
-      : URL.createObjectURL(editableData.profileImg)
-  }
-  alt="Profile"
-  className='profileImage'
-/>
-
-// Guardar los cambios en el backend
-const handleSaveChanges = async () => {
-  try {
-    // Validar que los campos obligatorios no estén vacíos
-    if (!editableData.name || !editableData.username || !editableData.email) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('name', editableData.name);
-    formData.append('username', editableData.username);
-    formData.append('email', editableData.email);
-
-    // Agregar la imagen solo si es un archivo válido
-    if (editableData.profileImg instanceof File) {
-      console.log("Archivo adjunto:", editableData.profileImg); // Depuración
-      formData.append('profileImg', editableData.profileImg);
-    }
-
-    // Depuración: Mostrar el contenido de FormData
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
-
-    const response = await fetch('http://localhost:3000/user/update-profile', {
-      method: 'PATCH',
-      body: formData,
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to update user data');
-    }
-
-    const updatedData = await response.json();
-
-    // Actualizar el estado con los datos actualizados
-    setUserData({
-      ...userData,
-      name: updatedData.user.name,
-      username: updatedData.user.username,
-      email: updatedData.user.email,
-      profileImg: updatedData.user.profilePicture || '/default-avatar.png', // Actualizar la URL de la imagen
-    });
-
-    setIsEditing(false); // Salir del modo de edición
-    alert('Profile updated successfully!');
-  } catch (error) {
-    console.error('Error updating profile:', error);
-    alert('Failed to update profile');
-  }
-};
   return (
     <div className='container'>
       <h1>Profile Settings</h1>
@@ -180,11 +170,16 @@ const handleSaveChanges = async () => {
         <img
           src={
             typeof editableData.profileImg === 'string'
-              ? editableData.profileImg || userData.profileImg
+              ? `${editableData.profileImg}?v=${Date.now()}` // Añadir parámetro de consulta para evitar caché
+              : userData.profileImg.startsWith('http')
+              ? `${userData.profileImg}?v=${Date.now()}`
               : URL.createObjectURL(editableData.profileImg)
           }
           alt="Profile"
           className='profileImage'
+          onError={(e) => {
+            e.currentTarget.src = '/default-avatar.png'; // Fallback seguro
+          }}
         />
         <p>Profile Image</p>
         {isEditing && (

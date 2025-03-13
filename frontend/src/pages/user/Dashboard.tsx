@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LogoutButton from '../../components/LogoutButton';
-import '../styles/userMainPanel';
 import styles from '../styles/userMainPanel';
 
 const Dashboard: React.FC = () => {
@@ -16,27 +15,38 @@ const Dashboard: React.FC = () => {
       try {
         const response = await fetch('http://localhost:3000/auth/me', {
           method: 'GET',
-          credentials: 'include', // Incluir cookies en la solicitud
+          credentials: 'include',
         });
-
+  
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.message || 'Failed to fetch user data');
         }
-
+  
         const userData = await response.json();
-        setUsername(userData.user.username || 'User'); // Fallback si no hay username
-        setProfilePicture(userData.user.profilePicture || '/default-avatar.png'); // Fallback si no hay foto
-        console.log("Profile picture URL:", userData.user.profilePicture); // Depuración
+        // Verifica que los datos necesarios estén presentes
+        if (!userData.user || !userData.user.username) {
+          throw new Error('Incomplete user data received from server');
+        }
+  
+        setUsername(userData.user.username);
+        setProfilePicture(userData.user.profilePicture || '/default-avatar.png');
+        console.log("Profile picture URL:", userData.user.profilePicture);
+  
+        // Usar darkMode del objeto usuario
+        const darkModePreference = userData.user.darkMode || false;
+        document.body.classList.toggle('dark-mode', darkModePreference);
+        console.log('Dark mode applied:', darkModePreference);
       } catch (error) {
         console.error('Error fetching user data:', error);
-        alert('Failed to load user data');
-        navigate('/login'); // Redirige al login si hay un error
+        alert(`Error: ${error}. Please log in again.`);
+        navigate('/login');
       }
     };
-
+  
     fetchUserData();
   }, [navigate]);
+  
 
   return (
     <div style={styles}>
@@ -47,14 +57,14 @@ const Dashboard: React.FC = () => {
         </div>
         <div style={styles.navbarRight}>
           <div style={styles.userSection}>
-            <img
-              src={profilePicture || '/default-avatar.png'} // Usar la imagen predeterminada si profilePicture está vacío
-              alt="Profile"
-              style={styles.profilePicture}
-              onError={(e) => {
-                e.currentTarget.src = '/default-avatar.png'; // Reemplazar con la imagen predeterminada en caso de error
-              }}
-            />
+          <img
+            src={`${profilePicture}?v=${Date.now()}`}
+            alt="Profile"
+            style={styles.profilePicture}
+            onError={(e) => {
+              e.currentTarget.src = 'http://localhost:3000/default-avatar.png';
+            }}
+          />
             <span style={styles.username}>{username}</span>
             <button
               className="menu-button"

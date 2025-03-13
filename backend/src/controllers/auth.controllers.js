@@ -34,11 +34,13 @@ async function login(req, res) {
 
     // Generar el token JWT
     const token = jwt.sign(
-      { userId: user.id, 
+      { 
+        userId: user.id, 
         email: user.email, 
         username: user.username, 
         role: user.role.name,
-        profilePicture: user.profileImg?.url ||"https://via.placeholder.com/150" 
+        profilePicture: user.profileImg?.url ||"https://via.placeholder.com/150" ,
+        darkMode: user.darkMode || false
       },
         process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRATION }
@@ -134,7 +136,8 @@ async function allUsers(req, res) {
         email: user.email,
         username: user.username,
         role: user.role.name,
-        profilePicture: user.profileImg?.url || "/default-avatar.png", // Devolver la URL de la imagen
+        profilePicture: user.profileImg?.url || "/default-avatar.png",
+        darkMode: user.darkMode || false
       },
     });
   } catch (error) {
@@ -167,7 +170,8 @@ async function adminUser(req, res) {
         email: admin.email || "Unknown",
         username: admin.username || "Unknown",
         role: admin.role.name || "Unknown",
-        profilePicture: admin.profileImg?.url || "/default-avatar.png", // Devolver la URL de la imagen
+        profilePicture: admin.profileImg?.url || "/default-avatar.png",
+        darkMode: admin.darkMode || false,
       },
     });
   } catch (error) {
