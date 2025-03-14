@@ -39,10 +39,10 @@ async function login(req, res) {
         email: user.email, 
         username: user.username, 
         role: user.role.name,
-        profilePicture: user.profileImg?.url ||"https://via.placeholder.com/150" ,
+        profilePicture: user.profileImg?.url || "https://via.placeholder.com/150",
         darkMode: user.darkMode || false
       },
-        process.env.JWT_SECRET_KEY,
+      process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRATION }
     );
 
@@ -50,9 +50,9 @@ async function login(req, res) {
     const cookieOption = {
       expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
+      secure: process.env.NODE_ENV === "production", // Solo en producción si usas HTTPS
+      sameSite: "lax", // Protección contra CSRF
+      path: "/", // Ruta global para la cookie
     };
     
     res.cookie("jwt", token, cookieOption);
@@ -77,7 +77,7 @@ async function register(req, res) {
   }
 
   try {
-    // Verify if the user already exists
+    // Verificar si el usuario ya existe
     const existingUser = await prisma.user.findUnique({
       where: { username },
     });
@@ -85,11 +85,11 @@ async function register(req, res) {
       return res.status(400).send({ status: "error", message: "Username already exists" });
     }
 
-    // Hash the password
+    // Hashear la contraseña
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
 
-    // Obtain the default role ("freeUser")
+    // Obtener el rol predeterminado ("freeUser")
     const defaultRole = await prisma.role.findUnique({
       where: { name: "freeUser" }, // Buscar el rol por su nombre
     });
@@ -98,7 +98,7 @@ async function register(req, res) {
       return res.status(500).send({ status: "error", message: "Default role not found" });
     }
 
-    // Create the new user
+    // Crear el nuevo usuario
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -186,7 +186,7 @@ async function logout(req, res) {
     res.clearCookie("jwt", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Solo en producción si usas HTTPS
-      sameSite: "lax",
+      sameSite: "lax", // Debe coincidir con la configuración al crear la cookie
       path: "/", // Debe coincidir con el path usado al configurar la cookie
     });
 

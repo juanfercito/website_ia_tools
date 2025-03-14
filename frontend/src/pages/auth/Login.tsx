@@ -1,4 +1,3 @@
-// pages/auth/Login.tsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import HomeButton from '../../components/HomeButton';
@@ -25,7 +24,7 @@ const Login: React.FC = () => {
     profilePicture: string;
     darkMode: boolean;
   }
-  
+
   interface LoginResponse {
     status: string;
     message: string;
@@ -33,7 +32,6 @@ const Login: React.FC = () => {
     token: string;
     user: UserResponse;
   }
-  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,9 +51,8 @@ const Login: React.FC = () => {
       }
 
       const data: LoginResponse = await response.json();
-      console.log('Login successful:', data);
 
-      // Suponiendo que data.user.darkMode está presente
+      // Aplicar el modo oscuro solo si el backend lo proporciona
       if (data.user.darkMode) {
         document.body.classList.add('dark-mode');
       } else {
