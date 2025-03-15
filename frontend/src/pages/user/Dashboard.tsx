@@ -3,13 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import LogoutButton from '../../components/LogoutButton';
 import styles from '../styles/userMainPanel';
 
+const DEFAULT_AVATAR = '/assets/default-avatar.png'; // Asegúrate de que este archivo exista en `public/assets/`
+
 const Dashboard: React.FC = () => {
-  const [username, setUsername] = useState<string>(''); // Nombre de usuario autenticado
-  const [profilePicture, setProfilePicture] = useState<string>('/default-avatar.png'); // Foto de perfil
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false); // Estado del menú desplegable
+  const [username, setUsername] = useState<string>(''); 
+  const [profilePicture, setProfilePicture] = useState<string>(DEFAULT_AVATAR);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Función para obtener los datos del usuario desde el backend
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -17,36 +18,35 @@ const Dashboard: React.FC = () => {
           method: 'GET',
           credentials: 'include',
         });
-  
+
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to fetch user data');
+          throw new Error('Failed to fetch user data');
         }
-  
+
         const userData = await response.json();
-        // Verifica que los datos necesarios estén presentes
         if (!userData.user || !userData.user.username) {
           throw new Error('Incomplete user data received from server');
         }
-  
+
         setUsername(userData.user.username);
-        setProfilePicture(userData.user.profilePicture || '/default-avatar.png');
-        console.log("Profile picture URL:", userData.user.profilePicture);
-  
-        // Usar darkMode del objeto usuario
+        
+        // Usar la URL directa del backend sin modificarla
+        const userProfilePic = userData.user.profilePicture || DEFAULT_AVATAR;
+        setProfilePicture(userProfilePic); // URL ya viene completa desde el backend
+
+        console.log("Profile picture URL:", userProfilePic);
+
         const darkModePreference = userData.user.darkMode || false;
         document.body.classList.toggle('dark-mode', darkModePreference);
-        console.log('Dark mode applied:', darkModePreference);
       } catch (error) {
         console.error('Error fetching user data:', error);
         alert(`Error: ${error}. Please log in again.`);
         navigate('/login');
       }
     };
-  
+
     fetchUserData();
   }, [navigate]);
-  
 
   return (
     <div style={styles}>
@@ -62,7 +62,9 @@ const Dashboard: React.FC = () => {
             alt="Profile"
             style={styles.profilePicture}
             onError={(e) => {
-              e.currentTarget.src = 'http://localhost:3000/default-avatar.png';
+              if (!e.currentTarget.src.endsWith(DEFAULT_AVATAR)) {
+                e.currentTarget.src = DEFAULT_AVATAR;
+              }
             }}
           />
             <span style={styles.username}>{username}</span>
