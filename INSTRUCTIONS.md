@@ -103,7 +103,8 @@ backend/                          # Backend folder
 │    ├── public/                  # Public Files Folder
 │    │   └── uploads/             # Static Files Upload Folder
 │    ├── routes/                  # API routes
-│    │   └── auth.routes.js         # Authentication Related Routes
+│    │   ├── auth.routes.js         # Authentication Related routes
+│    │   └── user.routes.js         # Loggued User Related Routes
 │    ├── scripts/                 # Additional scripts for prisma models
 │    │   ├── createAdmin.js         # Seed script for creating Admin user
 │    │   └── createRoles.js         # Seed script for creating roles
