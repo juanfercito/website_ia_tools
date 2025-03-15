@@ -3,50 +3,40 @@ const express = require('express');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./handlers/errorHandler');
-const { secureApp, uploadsPath } = require('./security/secure');
+const { secureApp, uploadsPath, staticFiles } = require('./security/secure');
 
-// Importar rutas de la aplicación
+// Import Application routes
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
 
-const app = express();
+const app = express(); // Initialize application
 
-// Configuración correcta de Helmet con CSP
+// Rignt Configuration of Helmet
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       "default-src": ["'self'"],
-      "img-src": ["'self'", "http://localhost:3000", "http://localhost:4000", "data:"], // Permitir imágenes desde ambos origenes
+      "img-src": ["'self'", "http://localhost:3000", "http://localhost:4000", "data:"], // Allow images from same origins
       "connect-src": ["'self'", "http://localhost:4000"],
     },
   },
-  crossOriginResourcePolicy: { policy: "cross-origin" }, // ✅ Ajustar CORP para recursos estáticos
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // ✅ Adjusting CORS for estatic resources
 }));
-// Middleware de seguridad personalizado (CORS)
+// Custom Security Middleware (CORS)
 app.use(secureApp);
 
-// Middlewares globales
+// Global Middlewares
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Rutas de la aplicación
+// Application Routes
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 
-// Servir archivos estáticos desde /uploads
-app.use('/uploads', (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:4000");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Cross-Origin-Resource-Policy", "cross-origin");
-
-  if (req.method === 'OPTIONS') {
-    res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
-    return res.status(200).json({});
-  }
-  next();
-}, uploadsPath);
+// Middleware for serving Static Files from /uploads
+app.use('/uploads', uploadsPath, staticFiles);
 
 // Ruta base de prueba
 app.get('/', (req, res) => {
@@ -54,7 +44,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the API', user: user || null });
 });
 
-// Manejador de errores
+// Error handling
 app.use(errorHandler);
 
 module.exports = app;

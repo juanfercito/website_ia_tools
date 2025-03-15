@@ -94,17 +94,21 @@ backend/                          # Backend folder
 │    ├── config/                  # Resources configuration
 │    │   └── redis.js               # Redis configuration for invalid tokens
 │    ├── controllers/             # Custom middlewares and Tokens config
-│    │   └── auth.controllers.js    # Tokens and Cookies Generation
+│    │   ├── auth.controllers.js    # Tokens and Cookies Generation
+│    │   └── user.controllers.js    # Multer config and Update User data
 │    ├── handlers/                # Registration handlers
 │    │   └── errorHandler.js        # Registration fields Validation
 │    ├── middlewares/             # Custom Middlewares
 │    │   └── authorization.js       # Tokens and Cookies authentication
+│    ├── public/                  # Public Files Folder
+│    │   └── uploads/             # Static Files Upload Folder
 │    ├── routes/                  # API routes
 │    │   └── auth.routes.js         # Authentication Related Routes
 │    ├── scripts/                 # Additional scripts for prisma models
 │    │   ├── createAdmin.js         # Seed script for creating Admin user
 │    │   └── createRoles.js         # Seed script for creating roles
-│    ├── services/                # Busines Logic
+│    ├── security/                # Security related Middlewares
+│    │   └── secure.js              # CORS and Static Files Middleware
 │    ├── utils/                   # Auxiliar Functions
 │    ├── app.js                   # Express Main Cofiguration
 │    ├── config.js                # Protected Resources Config
