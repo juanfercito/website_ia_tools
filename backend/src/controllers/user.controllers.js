@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage});
 
-// controllers/user.controllers.js
+// Middleware functions for Updating User data
 const updateUser = async (req, res) => {
   try {
     if (!req.user) {
@@ -37,14 +37,14 @@ const updateUser = async (req, res) => {
       profileImgUrl = `http://localhost:3000/uploads/${req.file.filename}`;
       console.log("Archivo recibido:", req.file);
 
-      // Upsert en ProfileImg (asegúrate que userId sea único en tu modelo)
+      // Upsert on ProfileImg (make sure that userId be UNIQUE in your model)
       await prisma.profileImg.upsert({
         where: { userId },
         create: {userId, url: profileImgUrl },
         update: { url: profileImgUrl },
       });
     }
-
+      // Receive the editable profile user data  from frontend for updates
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
@@ -59,7 +59,7 @@ const updateUser = async (req, res) => {
     });
 
     console.log("Updated User:", updatedUser);
-
+    // Generate a new token and cookie with the updated profile user data
     const token = jwt.sign(
       {
         userId: updatedUser.id,
@@ -71,7 +71,7 @@ const updateUser = async (req, res) => {
       process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRATION }
     );
-
+    // Configure the new Cookie
     const cookieOption = {
       expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
       httpOnly: true,
@@ -96,6 +96,8 @@ const updateUser = async (req, res) => {
   }
 };
 
+
+// Middleware functions for Updating User Dark Mode preference
 const updateDarkMode = async (req, res) => {
   try {
     if (!req.user) {

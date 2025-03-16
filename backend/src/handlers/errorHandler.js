@@ -1,15 +1,15 @@
-// Middleware para manejar errores de forma centralizada
+// Global Error Handler
 function errorHandler(err, req, res, next) {
-    // Registro del error en la consola para depuración
-    console.error("Error capturado por errorHandler:", err);
+
+    console.error("Error caught by errorHandler:", err);
   
-    // Determinar el código de estado HTTP
+    // Determine HTTP status code
     const statusCode = err.statusCode || 500;
   
-    // Mensaje amigable para el usuario
-    const message = err.message || "Ocurrió un error inesperado. Por favor, inténtalo más tarde.";
+    // Message Friendly with the User
+    const message = err.message || "It was a unexpected Error. Please, try again later.";
   
-    // Respuesta al cliente
+    // Response to Client
     res.status(statusCode).json({
       status: "error",
       code: statusCode,
@@ -17,5 +17,4 @@ function errorHandler(err, req, res, next) {
     });
   }
   
-  // Exportar el middleware
-  module.exports = errorHandler;
+  module.exports = {errorHandler};

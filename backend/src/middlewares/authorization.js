@@ -9,13 +9,13 @@ const prisma = new PrismaClient();
 // Middleware for verifying Cookies
 async function verifyCookie(req) {
   try {
-    // Verificar si existe una cookie en los encabezados de la solicitud
+    // Verify if request contains a cookie in it header
     if (!req.headers.cookie) {
       console.error("No cookie found in request headers");
       return false;
     }
 
-    // Extraer la cookie JWT
+    // Extract JWT cookie
     const cookieJWT = req.headers.cookie
       .split("; ")
       .find((cookie) => cookie.startsWith("jwt="));
@@ -25,10 +25,10 @@ async function verifyCookie(req) {
       return false;
     }
 
-    // Decodificar el token JWT
+    // Decode JWT token
     const decoded = jwt.verify(cookieJWT.slice(4), process.env.JWT_SECRET_KEY);
 
-    // Buscar al usuario en la base de datos
+    // Find the user in database
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
       include: { role: true, profileImg: true},
@@ -39,13 +39,13 @@ async function verifyCookie(req) {
       return false;
     }
 
-    // Validar que los datos del usuario estén completos
+    // Validate that the User data are complete
     if (!user.name || !user.email || !user.username) {
       console.error("Incomplete user data in database");
       return false;
     }
 
-    // Adjuntar los datos del usuario al objeto de solicitud
+    // Attcach the User data to the request oblject
     req.user = {
       id: user.id,
       name: user.name,
@@ -56,7 +56,7 @@ async function verifyCookie(req) {
       darkMode: user.darkMode || false
     };
 
-    console.log("Middleware req.user:", req.user); // Depuración
+    console.log("Middleware req.user:", req.user); // For testing purposes
     return true;
   } catch (err) {
     if (err.name === "TokenExpiredError") {
@@ -74,10 +74,10 @@ async function verifyCookie(req) {
 async function onlyUser(req, res, next) {
   const authenticated = await verifyCookie(req);
   if (!authenticated) {
-    console.error("Authentication failed"); // Depuración
+    console.error("Authentication failed"); // Testing
     return res.status(401).json({ status: "error", message: "Unauthorized. Please log in." });
   }
-  console.log("Middleware onlyUser passed successfully"); // Depuración
+  console.log("Middleware onlyUser passed successfully"); // Testing
   return next();
 }
 
@@ -88,7 +88,7 @@ async function onlyAdmin(req, res, next) {
     return res.status(401).json({ status: "error", message: "Unauthorized. Please log in." });
   }
 
-  // Verificar que el usuario tenga el rol de administrador
+  // Verify that User has the 'Admin' role
   if (!req.user || req.user.role.name !== "admin") {
     return res.status(403).json({ status: "error", message: "Forbidden. Admin access required." });
   }

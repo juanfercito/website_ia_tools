@@ -16,23 +16,23 @@ async function login(req, res) {
   }
 
   try {
-    // Buscar al usuario en la base de datos
+    // Find User by email for Request
     const user = await prisma.user.findUnique({
       where: { email },
-      include: { role: true, profileImg: true }, // Incluir el rol del usuario
+      include: { role: true, profileImg: true }, // Include Role and Profile Image
     });
 
     if (!user) {
       return res.status(400).send({ status: "error", message: "Invalid credentials" });
     }
 
-    // Verificar la contraseña
+    // Verify and validate the password
     const isPasswordValid = await bcryptjs.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).send({ status: "error", message: "Invalid credentials" });
     }
 
-    // Generar el token JWT
+    // Generate the JWT token
     const token = jwt.sign(
       { 
         userId: user.id, 
@@ -46,18 +46,18 @@ async function login(req, res) {
       { expiresIn: process.env.JWT_EXPIRATION }
     );
 
-    // Configurar la cookie
+    // Configure the cookie
     const cookieOption = {
       expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Solo en producción si usas HTTPS
-      sameSite: "lax", // Protección contra CSRF
-      path: "/", // Ruta global para la cookie
+      secure: process.env.NODE_ENV === "production", // Only in production if uses HTTPS
+      sameSite: "lax", // Protection against CSRF
+      path: "/", // global cookie route
     };
     
     res.cookie("jwt", token, cookieOption);
 
-    // Redirigir según el rol del usuario
+    // Redirect by User Role
     if (user.role.name === "admin") {
       return res.send({ status: "ok", message: "Logged Admin", redirect: "/admin-panel", token, user });
     } else {
@@ -77,7 +77,7 @@ async function register(req, res) {
   }
 
   try {
-    // Verificar si el usuario ya existe
+    // Verify by username if User already registered 
     const existingUser = await prisma.user.findUnique({
       where: { username },
     });
@@ -85,11 +85,11 @@ async function register(req, res) {
       return res.status(400).send({ status: "error", message: "Username already exists" });
     }
 
-    // Hashear la contraseña
+    // Hash password
     const salt = await bcryptjs.genSalt(10);
     const hashedPassword = await bcryptjs.hash(password, salt);
 
-    // Obtener el rol predeterminado ("freeUser")
+    // Obtain the Default Role ("freeUser")
     const defaultRole = await prisma.role.findUnique({
       where: { name: "freeUser" }, // Buscar el rol por su nombre
     });
@@ -98,7 +98,7 @@ async function register(req, res) {
       return res.status(500).send({ status: "error", message: "Default role not found" });
     }
 
-    // Crear el nuevo usuario
+    // Create the New User
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -120,14 +120,14 @@ async function register(req, res) {
 async function allUsers(req, res) {
   try {
     const user = await prisma.user.findUnique({
-      where: { id: req.user.id }, // Buscar al usuario por su ID
-      include: { role: true, profileImg: true }, // Incluir la relación profileImg
+      where: { id: req.user.id }, // Find the User by ID
+      include: { role: true, profileImg: true }, // Include Role and Profile Img
     });
 
     if (!user) {
       return res.status(404).json({ status: "error", message: "User not found" });
     }
-
+    // If OK, return the user data dictionary
     return res.json({
       status: "ok",
       user: {
@@ -149,22 +149,22 @@ async function allUsers(req, res) {
 async function adminUser(req, res) {
   try {
     const admin = await prisma.user.findUnique({
-      where: { id: req.user.id }, // Buscar al administrador por su ID
-      include: { role: true, profileImg: true }, // Incluir la relación profileImg
+      where: { id: req.user.id }, // Find the Admin User by ID
+      include: { role: true, profileImg: true }, // Include Role and Profile Img
     });
 
     if (!admin) {
       return res.status(404).json({ status: "error", message: "Admin not found" });
     }
 
-    // Validar que los datos necesarios estén presentes
+    // Validate all the fields for permissions
     if (!admin.name || !admin.email || !admin.username || !admin.role) {
       return res.status(500).json({ status: "error", message: "Incomplete admin data in database" });
     }
 
     return res.json({
       status: "ok",
-      user: { // Cambiar el nombre del objeto a "user" para coincidir con el frontend
+      user: { // Important: Use 'User' on response instead of 'Admin' for match with frontend
         id: admin.id,
         name: admin.name || "Unknown",
         email: admin.email || "Unknown",
@@ -182,15 +182,15 @@ async function adminUser(req, res) {
 
 async function logout(req, res) {
   try {
-    // Limpiar la cookie JWT
+    // Clean the JWT cookie
     res.clearCookie("jwt", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Solo en producción si usas HTTPS
-      sameSite: "lax", // Debe coincidir con la configuración al crear la cookie
-      path: "/", // Debe coincidir con el path usado al configurar la cookie
+      secure: process.env.NODE_ENV === "production", // Only in production if uses HTTPS
+      sameSite: "lax", // It must be the same with the cookie
+      path: "/", // It must be the same with the cookie when configure the path
     });
 
-    // Responder con éxito
+    // Return response
     return res.json({ status: "ok", message: "Logged out successfully" });
   } catch (error) {
     console.error("Error during logout:", error);

@@ -7,29 +7,29 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
-    // Cargar variables de entorno
+    // Charge Environment Variables
     const ADMIN_NAME = process.env.ADMIN_NAME;
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 
-    // Buscar el rol de administrador
+    // Finde the 'Admin' role
     const adminRole = await prisma.role.findUnique({ where: { name: 'admin' } });
     if (!adminRole) {
       throw new Error('the admin role does not exist');
     }
 
-    // Hashear la contraseña
+    // Hash the password
     const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 12);
 
-    // Verificar si el usuario administrador ya existe
+    // Verify if User already exists
     const existingAdmin = await prisma.user.findUnique({ where: { email: ADMIN_EMAIL } });
     if (existingAdmin) {
       console.log('Admin user already exists');
       return;
     }
 
-    // Crear el usuario administrador
+    // Create the Admin User
     await prisma.user.create({
       data: {
         name: ADMIN_NAME,

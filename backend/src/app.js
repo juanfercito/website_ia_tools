@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const errorHandler = require('./handlers/errorHandler');
+const {errorHandler} = require('./handlers/errorHandler');
 const { secureApp, uploadsPath, staticFiles } = require('./security/secure');
 
 // Import Application routes
@@ -21,7 +21,7 @@ app.use(helmet({
       "connect-src": ["'self'", "http://localhost:4000"],
     },
   },
-  crossOriginResourcePolicy: { policy: "cross-origin" }, // ✅ Adjusting CORS for estatic resources
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // Adjusting CORP for estatic resources
 }));
 // Custom Security Middleware (CORS)
 app.use(secureApp);
@@ -38,7 +38,7 @@ app.use('/user', userRoutes);
 // Middleware for serving Static Files from /uploads
 app.use('/uploads', uploadsPath, staticFiles);
 
-// Ruta base de prueba
+// Route Root for testing purposes
 app.get('/', (req, res) => {
   const user = req.user;
   res.json({ message: 'Welcome to the API', user: user || null });
