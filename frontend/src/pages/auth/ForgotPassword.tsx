@@ -1,48 +1,42 @@
 // pages/auth/ForgotPassword.tsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HomeButton from '../../components/HomeButton';
 import '../styles/authViews.css';
 
 const ForgotPassword: React.FC = () => {
-  const [step, setStep] = useState(1); // Paso actual del proceso
+  const navigate = useNavigate();
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Paso 1: Enviar código de verificación al correo electrónico
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
-  
+
     try {
       const response = await fetch('http://localhost:3000/auth/send-verification-code', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to send verification code');
+        throw new Error(errorData.message);
       }
-  
+
       setSuccess('Verification code sent to your email.');
-      setStep(2); // Avanzar al siguiente paso
+      setStep(2);
     } catch (error) {
-      let errorMessage = 'An error occurred while sending the verification code.';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      setError(errorMessage);
+      setError(error instanceof Error ? error.message : 'An error occurred');
     }
   };
 
-  // Paso 2: Verificar el código enviado
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -51,29 +45,22 @@ const ForgotPassword: React.FC = () => {
     try {
       const response = await fetch('http://localhost:3000/auth/verify-code', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, verificationCode }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Invalid verification code');
+        throw new Error(errorData.message);
       }
 
       setSuccess('Code verified successfully.');
-      setStep(3); // Avanzar al siguiente paso
+      setStep(3);
     } catch (error) {
-      let errorMessage = 'An error occurred while sending the verification code.';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      setError(errorMessage);
+      setError(error instanceof Error ? error.message : 'An error occurred');
     }
   };
 
-  // Paso 3: Cambiar la contraseña
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -82,33 +69,25 @@ const ForgotPassword: React.FC = () => {
     try {
       const response = await fetch('http://localhost:3000/auth/change-password', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, newPassword }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, verificationCode, newPassword }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to change password');
+        throw new Error(errorData.message);
       }
 
-      setSuccess('Password changed successfully.');
-      setStep(1); // Reiniciar el proceso
+      setSuccess('Password changed successfully!');
+      setTimeout(() => navigate('/login'), 2000); // Redirigir al login
     } catch (error) {
-      let errorMessage = 'An error occurred while sending the verification code.';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      setError(errorMessage);
+      setError(error instanceof Error ? error.message : 'An error occurred');
     }
   };
 
   return (
     <div className='container'>
-      {/* Componente HomeButton */}
       <HomeButton />
-
       <h1>Forgot Password</h1>
 
       {step === 1 && (
@@ -151,12 +130,13 @@ const ForgotPassword: React.FC = () => {
 
       {step === 3 && (
         <form onSubmit={handleChangePassword} className='form'>
-          <p>Enter your new password.</p>
+          <p>Enter your new password (minimum 8 characters).</p>
           <input
             type="password"
             placeholder="New Password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
+            minLength={8}
             required
             className='input'
           />

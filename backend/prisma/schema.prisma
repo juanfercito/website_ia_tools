@@ -33,15 +33,16 @@ model User {
   favorites    Favorite[]
   usageLogs    UsageLog[]
   reviews      Review[]
+  VerificationCode VerificationCode?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 }
 
 model ProfileImg {
   id      String   @id @default(cuid())
-  url     String   // URL de la imagen
+  url     String   // Image URL 
   user    User?    @relation(fields: [userId], references: [id]) // Relación opcional
-  userId  String?  @unique // Clave foránea con índice único
+  userId  String?  @unique // Foreign Key with index UNIQUE
 }
 
 model Tool {
@@ -73,7 +74,7 @@ model UsageLog {
   user      User     @relation(fields: [userId], references: [id])
   toolId    String
   tool      Tool     @relation(fields: [toolId], references: [id])
-  action    String   // Ejemplo: "view", "use"
+  action    String   // Example: "view", "use"
   timestamp DateTime @default(now())
 }
 
@@ -83,8 +84,16 @@ model Review {
   user      User     @relation(fields: [userId], references: [id])
   toolId    String
   tool      Tool     @relation(fields: [toolId], references: [id])
-  rating    Int      // Ejemplo: 1-5
+  rating    Int      // Example: 1-5
   comment   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model VerificationCode {
+  id        String   @id @default(cuid())
+  userId    String   @unique // Relation with user
+  code      String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id])
 }
