@@ -1,14 +1,17 @@
 // pages/user/AccountSettings.tsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/userSettingsViews.css';
 
 const AccountSettings: React.FC = () => {
-  // Estado para el modo oscuro
-  const [userData, setUserData] = useState({
-    darkMode: false, // Estado inicial del modo oscuro
-  });
 
-  // Estado para controlar si los datos se están cargando
+  // Account Settings Status
+  const navigate = useNavigate();
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(false);
+  // Dark Mode Statement
+  const [userData, setUserData] = useState({darkMode: false,});
   const [isLoading, setIsLoading] = useState(true);
 
   // Cargar los datos del usuario desde el backend
@@ -26,20 +29,15 @@ const AccountSettings: React.FC = () => {
         }
 
         const data = await response.json();
-        console.log('User data received:', data);
-
-        // Actualizar el estado con los datos del usuario
-        setUserData({
-          darkMode: data.user.darkMode || false, // Asegúrate de que el campo darkMode esté presente
-        });
-
-        // Aplicar la clase CSS al body según el modo oscuro
+        // Update Dark mode with user data
+        setUserData({ darkMode: data.user.darkMode || false });
+        // Apply class CSS to body for the dark mode
         document.body.classList.toggle('dark-mode', data.user.darkMode || false);
       } catch (error) {
         console.error('Error fetching user data:', error);
         alert('Failed to load user data');
       } finally {
-        setIsLoading(false); // Marcar como cargado
+        setIsLoading(false); // Target as loaded
       }
     };
 
@@ -77,41 +75,83 @@ const AccountSettings: React.FC = () => {
     }
   };
 
-  // Manejar el cambio de contraseña
+  // handle the updating of the password
   const handleChangePassword = async () => {
-    try {
-      console.log("Changing password...");
-      const response = await fetch('http://localhost:3000/auth/change-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to change password');
-      }
-
-      alert('Password changed successfully!');
-    } catch (error) {
-      console.error('Error changing password:', error);
-      alert('Failed to change password');
+    if (!currentPassword || !newPassword) {
+      alert('Please fill in all fields');
+      return;
     }
+    setIsLoading(true);
+    try {
+      const response = await fetch('http://localhost:3000/user/update-password',
+        {
+          method: 'PATCH',  
+          headers: {'Content-Type': 'application/json'},
+          credentials: 'include',
+          body: JSON.stringify({ currentPassword, newPassword }),
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message);
+        }
+        alert('Password updated successfully!');
+        setCurrentPassword('');
+        setNewPassword('');
+        setIsPasswordSectionOpen(false); // hide form after successful
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'An error occurred');
+    } finally {setIsLoading(false)};
   };
 
   return (
     <div className="container">
       <h1>Account Settings</h1>
 
-      {/* Opción: Cambiar contraseña */}
+      {/* Change Password Section */}
       <div className="settingRow">
         <label>Change Password:</label>
-        <button onClick={handleChangePassword} className="actionButton" disabled={isLoading}>
+        <button
+          className="actionButton"
+          onClick={() => setIsPasswordSectionOpen(true)}
+          disabled={isLoading}
+        >
           Change Password
         </button>
       </div>
+
+      {/* Formulario de cambio de contraseña (oculto por defecto) */}
+      {isPasswordSectionOpen && (
+        <div className="passwordFormContainer">
+          <div className="passwordChangeRow">
+            <input
+              type="password"
+              placeholder="Current Password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="inputField"
+              disabled={isLoading}
+            />
+          </div>
+          <div className="passwordChangeRow">
+            <input
+              type="password"
+              placeholder="New Password (min 8 characters)"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="inputField"
+              minLength={8}
+              disabled={isLoading}
+            />
+          </div>
+          <button
+            onClick={handleChangePassword}
+            className="saveButton"
+            disabled={isLoading || !currentPassword || !newPassword}
+          >
+            Save New Password
+          </button>
+        </div>
+      )}
 
       {/* Opción: Modo oscuro */}
       <div className="settingRow">

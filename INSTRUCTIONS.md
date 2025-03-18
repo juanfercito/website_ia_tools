@@ -87,66 +87,77 @@ my-project/
 ```
 ### Backend Folder:
 ```yaml
-backend/                          # Backend folder
-├── prisma/                       # Prisma schema and migrations
-├── public/                       # Default public files
-├── src/                          # Backend source code 
-│    ├── config/                  # Resources configuration
-│    │   └── redis.js               # Redis configuration for invalid tokens
-│    ├── controllers/             # Custom middlewares and Tokens config
-│    │   ├── auth.controllers.js    # Tokens and Cookies Generation
-│    │   └── user.controllers.js    # Multer config and Update User data
-│    ├── handlers/                # Registration handlers
-│    │   └── errorHandler.js        # Registration fields Validation
-│    ├── middlewares/             # Custom Middlewares
-│    │   └── authorization.js       # Tokens and Cookies authentication
-│    ├── public/                  # Public Files Folder
-│    │   └── uploads/             # Static Files Upload Folder
-│    ├── routes/                  # API routes
-│    │   ├── auth.routes.js         # Authentication Related routes
-│    │   └── user.routes.js         # Loggued User Related Routes
-│    ├── scripts/                 # Additional scripts for prisma models
-│    │   ├── createAdmin.js         # Seed script for creating Admin user
-│    │   └── createRoles.js         # Seed script for creating roles
-│    ├── security/                # Security related Middlewares
-│    │   └── secure.js              # CORS and Static Files Middleware
-│    ├── utils/                   # Auxiliar Functions
-│    ├── app.js                   # Express Main Cofiguration
-│    ├── config.js                # Protected Resources Config
-│    └── server.js                # Server Entry Point
-├── .env                          # Environment variables
-├── .gitignore                    # Ignored files and directories
-├── nodemon.json                  # Refresh Server configuration
-├── package.json                  # Backend dependencies and scripts
-└── pnpm-lock.yaml                # Ts-node configuration
+backend/                            # Backend folder
+├── prisma/                         # Prisma schema and migrations
+├── public/                         # Default public files
+├── src/                            # Backend source code 
+│    ├── config/                    # Resources configuration
+│    │   ├── mailer.js                # Configuration for nodemailer service
+│    │   └── redis.js                 # Redis configuration for invalid tokens
+│    ├── controllers/               # Custom middlewares and Tokens config
+│    │   ├── auth.controllers.js      # Tokens and Cookies Generation
+│    │   ├── auth.controlPassword.js  # Codes Generator and Recovery Password
+│    │   └── user.controllers.js      # Multer config and Update User data
+│    ├── handlers/                  # Registration handlers
+│    │   └── errorHandler.js          # Registration fields Validation
+│    ├── middlewares/               # Custom Middlewares
+│    │   └── authorization.js         # Tokens and Cookies authentication
+│    ├── public/                    # Public Files Folder
+│    │   └── uploads/               # Static Files Upload Folder
+│    ├── routes/                    # API routes
+│    │   ├── auth.routes.js           # Authentication Related routes
+│    │   └── user.routes.js           # Loggued User Related Routes
+│    ├── scripts/                   # Additional scripts for prisma models
+│    │   ├── createAdmin.js           # Seed script for creating Admin user
+│    │   └── createRoles.js           # Seed script for creating roles
+│    ├── security/                  # Security related Middlewares
+│    │   └── secure.js                # CORS and Static Files Middleware
+│    ├── utils/                     # Auxiliar Functions
+│    ├── app.js                     # Express Main Cofiguration
+│    ├── config.js                  # Protected Resources Config
+│    └── server.js                  # Server Entry Point
+├── .env                            # Environment variables
+├── .gitignore                      # Ignored files and directories
+├── nodemon.json                    # Refresh Server configuration
+├── package.json                    # Backend dependencies and scripts
+└── pnpm-lock.yaml                  # Ts-node configuration
 ```
 ### Frontend Folder:
 ```yaml
 frontend/
-├── public/                       # Default public files
-├── src/                          # All application Views and complements
-│   ├── components/               # Reusable components
+├── public/                           # Default public files
+├── src/                              # All application Views and complements
+│   ├── components/                   # Reusable components
+│   │   ├── HomeButton.tsx
+│   │   ├── LogoutButton.tsx
 │   │   ├── Navbar.tsx
 │   │   └── Footer.tsx
-│   ├── hooks/                    # Custom auth and config hooks
+│   ├── hooks/                        # Custom auth and config hooks
 │   │   └── useAuth.tsx
 │   ├── pages/
-│   │   ├── auth/                 # Auth main views
+│   │   ├── auth/                     # Auth main views
 │   │   │   ├── ForgotPassword.tsx
 │   │   │   ├── Login.tsx
 │   │   │   └── Register.tsx
-│   │   ├── user/                 # Authenticated user views
-│   │   │   ├── AdminPanel.tsx
-│   │   │   └── Dashboard.tsx
+│   │   ├── styles/                   # App Main styles
+│   │   │   ├── authViews.css
+│   │   │   ├── authViews.tsx
+│   │   │   ├── userMainPanel.tsx
+│   │   │   └── userSettingsViews.css
+│   │   ├── user/                     # Authenticated user views
+│   │   │   ├── AccountSettings.tsx    # Overall app settings
+│   │   │   ├── AdminPanel.tsx         # Main Panel for only Admin User
+│   │   │   └── Dashboard.tsx          # Main Panel for all users
+│   │   │   ├── ProfileSettings.tsx    # User Data settings
 │   │   └── Home.tsx
 │   ├── App.css
-│   ├── App.tsx                   # Start Application file
+│   ├── App.tsx                       # Start Application file
 │   ├── index.css
-│   └── main.tsx                  # Run Root Application file
-├── .gitignore                    # Ignored files and directories
+│   └── main.tsx                      # Run Root Application file
+├── .gitignore                        # Ignored files and directories
 ├── package.json
-├── pnpm-lock.yaml                # Ts-node configuration
-└── vite.config.js                # Config type and default features
+├── pnpm-lock.yaml                    # Ts-node configuration
+└── vite.config.js                    # Config type and default features
 ```
 ## 🚀 Getting Started
 

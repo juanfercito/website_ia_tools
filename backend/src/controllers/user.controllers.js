@@ -1,4 +1,4 @@
-const bcryptjs = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const { PrismaClient } = require("@prisma/client");
 const multer = require("multer");
 const path = require("path");
@@ -175,4 +175,47 @@ const getDarkModePreference = async (req, res) => {
     res.status(500).json({ status: "error", message: error.message });
   }
 };
-module.exports = { updateUser, getDarkModePreference, updateDarkMode, upload };
+
+// Middleware function for uploading user password
+const updatePassword = async (req, res) => {
+  try{
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    // Find User
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+    if (!user) {
+      return res.status(404).json({ status: "error", message: "User not found" });
+    }
+    // Check current password
+    const validPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!validPassword) {
+      return res.status(401).json({ status: "error", message: "Invalid current password" });
+    }
+    // Validate new password
+    if (newPassword.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters"});
+    }
+    // Hash new password
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    // Update password in database
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ message: " internal Server Error" });
+  };
+};
+module.exports = { 
+  updateUser, 
+  getDarkModePreference, 
+  updateDarkMode, 
+  updatePassword,
+  upload 
+};

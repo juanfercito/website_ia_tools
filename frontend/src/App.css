@@ -4,34 +4,51 @@
   box-sizing: border-box;
 }
 
-/* Global Dark Mode */
-/* Estilos generales */
+/* Global Application Styles */
 body {
-  background-color: #ffffff;
+  background: linear-gradient(135deg, #a8d8ff, #ffffff);
   color: #000000;
   transition: all 0.3s ease;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* Estilos para el modo oscuro */
+/* HomeButton Styles */
+.home-button {
+  position: fixed; 
+  bottom: 20px; 
+  right: 20px; 
+  font-size: 2rem; 
+  color: #007BFF; 
+  text-decoration: none; 
+  cursor: pointer; 
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+.home-button:hover {
+  font-size: 2.1rem;
+  transform: scale(1.05);
+}
+
+/* Dark Mode Styles */
 body.dark-mode {
-  background-color: #121212;
+  background: #121212;
   color: #ffffff;
 }
 
-/* Interruptor de modo oscuro */
+/* Dark Mode Switch */
 .switch {
   position: relative;
   display: inline-block;
   width: 60px;
   height: 34px;
 }
-
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .slider {
   position: absolute;
   cursor: pointer;
@@ -43,7 +60,6 @@ body.dark-mode {
   transition: 0.3s;
   border-radius: 34px;
 }
-
 .slider:before {
   position: absolute;
   content: "";
