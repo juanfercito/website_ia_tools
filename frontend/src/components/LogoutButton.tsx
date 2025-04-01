@@ -11,7 +11,12 @@ const LogoutButton: React.FC = () => {
       // Enviar solicitud POST al backend para cerrar sesión
       const response = await fetch('http://localhost:3000/auth/logout', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Incluir el token de autorización
+        },
         credentials: 'include', // Incluir cookies en la solicitud
+
       });
 
       if (!response.ok) {
@@ -19,8 +24,9 @@ const LogoutButton: React.FC = () => {
         throw new Error(errorData.message || 'Failed to log out');
       }
 
+      const data = await response.json();
       // Limpiar el estado local y el modo oscuro del DOM
-      console.log('Logged out successfully');
+      console.log('Logged out successfully', data.message);
 
       // Eliminar la clase 'dark-mode' del body
       document.body.classList.remove('dark-mode');

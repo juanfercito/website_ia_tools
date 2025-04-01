@@ -8,6 +8,7 @@ const { secureApp, uploadsPath, staticFiles } = require('./security/secure');
 // Import Application routes
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
+const { checTokenBlacklist } = require('./middlewares/tokenBlacklist');
 
 const app = express(); // Initialize application
 
@@ -46,5 +47,7 @@ app.get('/', (req, res) => {
 
 // Error handling
 app.use(errorHandler);
+// Middleware for checking token blacklist(For security reasons)
+app.use(checTokenBlacklist);
 
 module.exports = app;

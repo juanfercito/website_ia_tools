@@ -101,7 +101,9 @@ backend/                            # Backend folder
 │    ├── handlers/                  # Registration handlers
 │    │   └── errorHandler.js          # Registration fields Validation
 │    ├── middlewares/               # Custom Middlewares
-│    │   └── authorization.js         # Tokens and Cookies authentication
+│    │   ├── authorization.js         # Tokens and Cookies authentication
+│    │   ├── redisMiddleware.js       # Configuration for using redis cache
+│    │   └── tokenBlacklist.js        # Addying invalid tokens to blacklist
 │    ├── public/                    # Public Files Folder
 │    │   └── uploads/               # Static Files Upload Folder
 │    ├── routes/                    # API routes

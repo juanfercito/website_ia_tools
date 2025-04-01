@@ -2,6 +2,8 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { PrismaClient } = require("@prisma/client");
+const redisClient = require("../config/redis");
+const { addToBlacklist } = require("../middlewares/tokenBlacklist");
 
 dotenv.config();
 
@@ -119,6 +121,12 @@ async function register(req, res) {
 
 async function allUsers(req, res) {
   try {
+    // Using cache data
+    if (req.cacheUser) {
+      console.log('loading to cache');
+      return res.json(req.cacheUser);
+    };
+
     const user = await prisma.user.findUnique({
       where: { id: req.user.id }, // Find the User by ID
       include: { role: true, profileImg: true }, // Include Role and Profile Img
@@ -128,7 +136,7 @@ async function allUsers(req, res) {
       return res.status(404).json({ status: "error", message: "User not found" });
     }
     // If OK, return the user data dictionary
-    return res.json({
+    const userData ={
       status: "ok",
       user: {
         id: user.id,
@@ -139,7 +147,16 @@ async function allUsers(req, res) {
         profilePicture: user.profileImg?.url || "/default-avatar.png",
         darkMode: user.darkMode || false
       },
-    });
+    };
+
+    // Save in cache if not exists
+    await redisClient.set(`user:${user.id}`, JSON.stringify(userData),
+      console.log('saved in cache')
+    );
+
+    // Return the user data dictionary
+    return res.json(userData);
+
   } catch (error) {
     console.error("Error fetching user data:", error);
     return res.status(500).json({ status: "error", message: "Internal server error" });
@@ -148,6 +165,12 @@ async function allUsers(req, res) {
 
 async function adminUser(req, res) {
   try {
+    // Using cache data
+    if (req.cacheUser) {
+      console.log('loading to cache');
+      return res.json(req.cacheUser);
+    };
+
     const admin = await prisma.user.findUnique({
       where: { id: req.user.id }, // Find the Admin User by ID
       include: { role: true, profileImg: true }, // Include Role and Profile Img
@@ -162,7 +185,7 @@ async function adminUser(req, res) {
       return res.status(500).json({ status: "error", message: "Incomplete admin data in database" });
     }
 
-    return res.json({
+    const adminData ={
       status: "ok",
       user: { // Important: Use 'User' on response instead of 'Admin' for match with frontend
         id: admin.id,
@@ -173,7 +196,15 @@ async function adminUser(req, res) {
         profilePicture: admin.profileImg?.url || "/default-avatar.png",
         darkMode: admin.darkMode || false,
       },
-    });
+    };
+
+    // Save in cache if not exists
+    await redisClient.set(`user:${admin.id}`, JSON.stringify(adminData),
+      console.log('saved in cache')
+    );
+    // Return the admin data dictionary
+    return res.json(adminData);
+
   } catch (error) {
     console.error("Error fetching admin data:", error);
     return res.status(500).json({ status: "error", message: "Internal server error" });
@@ -182,6 +213,12 @@ async function adminUser(req, res) {
 
 async function logout(req, res) {
   try {
+
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ status: "error", message: "No token provided" });
+    }
+    await addToBlacklist(token);
     // Clean the JWT cookie
     res.clearCookie("jwt", {
       httpOnly: true,

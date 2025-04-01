@@ -1,12 +1,10 @@
 // pages/user/AccountSettings.tsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../styles/userSettingsViews.css';
 
 const AccountSettings: React.FC = () => {
 
   // Account Settings Status
-  const navigate = useNavigate();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isPasswordSectionOpen, setIsPasswordSectionOpen] = useState(false);
