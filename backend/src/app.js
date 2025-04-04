@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const compression = require('compression');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const {errorHandler} = require('./handlers/errorHandler');
@@ -12,13 +13,18 @@ const { checTokenBlacklist } = require('./middlewares/tokenBlacklist');
 
 const app = express(); // Initialize application
 
-// Rignt Configuration of Helmet
+app.use(compression()); // Enable compression for all responses
+
+// Right Configuration of Helmet
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       "default-src": ["'self'"],
       "img-src": ["'self'", "http://localhost:3000", "http://localhost:4000", "data:"], // Allow images from same origins
+      "script-src": ["'self", "https://cdn.jsdelivr.net"], // Allow scripts from CDN
+      "style-src": ["'self'", "https://cdn.jsdelivr.net"], // Allow styles from CDN
+      "font-src": ["'self'", "https://cdn.jsdelivr.net"], // Allow fonts from CDN
       "connect-src": ["'self'", "http://localhost:4000"],
     },
   },

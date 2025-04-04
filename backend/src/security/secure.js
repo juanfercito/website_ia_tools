@@ -21,7 +21,7 @@ function secureApp(req, res, next) {
 const uploadsPath = express.static(path.join(__dirname, '../public/uploads'));
 // Serve static files function
 const staticFiles = (req, res, next) => {
-  es.header("Access-Control-Allow-Origin", "http://localhost:4000");
+  res.header("Access-Control-Allow-Origin", "http://localhost:4000");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Cross-Origin-Resource-Policy", "cross-origin");
 
