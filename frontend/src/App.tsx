@@ -1,14 +1,6 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import Dashboard from './pages/user/Dashboard';
-import AdminPanel from './pages/user/AdminPanel';
-import ProfileSettings from './pages/user/ProfileSettings';
-import AccountSettings from './pages/user/AccountSettings';
-
 
 // styles
 import './App.css';
@@ -16,15 +8,25 @@ import './App.css';
 // components
 import Navbar from './components/Navbar';
 
+// Lazy load pages
+const Login = React.lazy(() => import('./pages/auth/Login'));
+const Register = React.lazy(() => import('./pages/auth/Register'));
+const ForgotPassword = React.lazy(() => import('./pages/auth/ForgotPassword'));
+const Dashboard = React.lazy(() => import('./pages/user/Dashboard'));
+const AdminPanel = React.lazy(() => import('./pages/user/AdminPanel'));
+const ProfileSettings = React.lazy(() => import('./pages/user/ProfileSettings'));
+const AccountSettings = React.lazy(() => import('./pages/user/AccountSettings'));
+
+
 const App: React.FC = () => {
   const location = useLocation();
-
-  // Mostrar la Navbar solo en la página de inicio ("/")
+  // Show Navbar only on the home page
   const shouldShowNavbar = location.pathname === '/';
 
   return (
     <>
       {shouldShowNavbar && <Navbar />}
+      <Suspense fallback={<div className='loading'>Loading...</div>}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -35,6 +37,7 @@ const App: React.FC = () => {
         <Route path="/profile-settings" element={<ProfileSettings />} />
         <Route path="/account-settings" element={<AccountSettings />} />
       </Routes>
+      </Suspense>
     </>
   );
 };

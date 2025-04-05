@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import LogoutButton from '../../components/LogoutButton';
+import React, { Suspense, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+//import LogoutButton from '../../components/LogoutButton';
 import styles from '../styles/userMainPanel';
 
 const DEFAULT_AVATAR = '/assets/default-avatar.png'; // Asegúrate de que este archivo exista en `public/assets/`
+
+const UserBurguerMenu = React.lazy(() => import('../../components/UserBurguerMenu'));
 
 const Dashboard: React.FC = () => {
   const [username, setUsername] = useState<string>(''); 
@@ -68,25 +70,13 @@ const Dashboard: React.FC = () => {
             }}
           />
             <span style={styles.username}>{username}</span>
-            <button
-              className="menu-button"
-              style={styles.menuButton}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              ☰
-            </button>
+            <Suspense fallback={<div>Loading...</div>}>
+              <UserBurguerMenu
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+              />
+            </Suspense>
           </div>
-          {isMenuOpen && (
-            <div className="dropdown-menu" style={styles.dropdownMenu}>
-              <Link to="/profile-settings" style={styles.dropdownItem}>
-                Profile
-              </Link>
-              <Link to="/account-settings" style={styles.dropdownItem}>
-                Settings
-              </Link>
-              <LogoutButton />
-            </div>
-          )}
         </div>
       </nav>
 
