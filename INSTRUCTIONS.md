@@ -1,9 +1,9 @@
-# 🚀 IA Tools Platform
+# 🚀 Website IA Tools
 
 **License**  
 **PRs Welcome**
 
-Welcome to **IA Tools Platform**, a web application designed to showcase popular Artificial Intelligence tools, allow users to interact with them, and track their usage. This project is built using modern technologies like **React**, **Node.js**, **Express**, and **Prisma**, ensuring scalability, performance, and ease of use.
+Welcome to **Website IA Tools**, a web application designed to showcase popular Artificial Intelligence tools, allow users to interact with them, and track their usage. This project is built using modern technologies like **React**, **Node.js**, **Express**, and **Prisma**, ensuring scalability, performance, and ease of use.
 
 ---
 
@@ -26,7 +26,7 @@ Welcome to **IA Tools Platform**, a web application designed to showcase popular
 
 ## 🌟 Overview
 
-The **IA Tools Platform** is a full-stack web application that allows users to:
+The **Website IA Tools** is a full-stack web application that allows users to:
 
 - **Discover and explore** popular AI tools categorized by functionality.
 - **Save favorite tools** for quick access.
@@ -174,15 +174,19 @@ Before you begin, ensure you have the following installed:
 
 #### Clone the Repository
 ```bash
-git clone https://github.com/yourusername/ia-tools-platform.git
-cd ia-tools-platform
+git clone https://github.com/yourusername/website-ia-tools.git
+cd website-ia-tools #you can change it for your project name
 ```
+
+This project is set up as a multi-package monorepository, which allows you to run all servers from the root folder with a single command.
+To enable this, you need to structure your project similarly to the provided **pnpm-workspace.yaml** and **package.json** files on the root folder.
+
 Install Dependencies
 ```bash
 pnpm install
 ```
 Set Up Environment Variables
-Create a .env file in the backend folder and add your database credentials and other environment variables for your application:
+Create a .env file in the backend folder and add your database credentials and other environment variables for your application, for instance:
 
 ```env
 DATABASE_URL="mysql://user:password@localhost:3306/ia_tools_db"
@@ -194,16 +198,28 @@ Run Database Migrations
 cd backend
 npx prisma migrate dev --name init
 ```
+
+The commands to start the project in development or production mode are as follows:
+
 Start the Development Server
 ```bash
 pnpm run dev
 ```
+
+Start the Production Server
+```bash
+pnpm start
+```
+
 ## 🛠️ Usage
 ### Backend
-The backend runs on http://localhost:3000 by default.
+The backend runs on http://localhost:3000 by default on both dev and production mode.
 Use tools like Postman or Insomnia to test the APIs.
 ### Frontend
-The frontend runs on http://localhost:5173 by default.
+The frontend runs on http://localhost:4000 by default, but you can configure it by your preferences.
+### Frontend on Production Mode
+This server runs on http://localhost:4173 by default, but you can configure it by your preferences.
+
 Open the URL in your browser to interact with the app.
 ## 🌐 API Endpoints
 /auth/register (POST): Register a new user.
@@ -216,7 +232,7 @@ We welcome contributions from the community! Here’s how you can help:
 
 Fork the repository.
 ```bash
-git clone https://github.com/yourusername/ia-tools-platform.git
+git clone https://github.com/yourusername/website-ia-tools.git
 ```
 Create a new branch:
 ```bash

@@ -1,6 +1,10 @@
 # Backend
 /node_modules
 .env
+.env.production
+.env.development
+.env.test
+.env.local
 
 # Frontend
 /frontend/node_modules

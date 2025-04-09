@@ -3,7 +3,18 @@ const path = require('path');
 
 // Custom Security Middleware (CORS)
 function secureApp(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:4000");
+  // Multiple origins
+  const allowedOrigins = [
+    "http://localhost:4000",
+    "http://localhost:4173",
+    "https://your-production-domain.com",
+  ];
+
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  // Set headers for CORS
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   

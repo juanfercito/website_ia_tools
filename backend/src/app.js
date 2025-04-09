@@ -13,7 +13,10 @@ const { checTokenBlacklist } = require('./middlewares/tokenBlacklist');
 
 const app = express(); // Initialize application
 
-app.use(compression()); // Enable compression for all responses
+app.use(compression({
+  level: 6,
+  threshold: 0,
+})); // Enable compression for all responses
 
 // Right Configuration of Helmet
 app.use(helmet({

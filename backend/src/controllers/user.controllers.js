@@ -3,10 +3,13 @@ const { PrismaClient } = require("@prisma/client");
 const multer = require("multer");
 const path = require("path");
 const jwt = require("jsonwebtoken");
+const sharp = require("sharp");
+const fs = require("fs/promises");
 
 const prisma = new PrismaClient();
 
 // Configurate Multer
+/*
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, "../public/uploads"));
@@ -18,6 +21,9 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${safeFileName}`);
   },
 });
+*/
+
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage: storage});
 
@@ -30,35 +36,39 @@ const updateUser = async (req, res) => {
 
     const { id: userId } = req.user;
     const { name, username, email } = req.body;
-
     let profileImgUrl = null;
 
     if (req.file) {
-      profileImgUrl = `http://localhost:3000/uploads/${req.file.filename}`;
-      console.log("Archivo recibido:", req.file);
+      // process with sharp
+      const proccessedImgBuffer = await sharp(req.file.buffer)
+        .resize(300, 300)
+        .webp({ quality: 80 })
+        .toBuffer();
+
+        // Generate a safe name and save in storage
+        const safeFileName = `${Date.now()}-${req.file.originalname.replace(/\s+/g, "_")}.webp`;
+        const uploadPath = path.join(__dirname, "../public/uploads", safeFileName);
+
+        await fs.promises.writeFile(uploadPath, proccessedImgBuffer);
+
+        profileImgUrl = `http://localhost:3000/uploads/${safeFileName}`;
+        console.log("Archivo recibido:", uploadPath);
 
       // Upsert on ProfileImg (make sure that userId be UNIQUE in your model)
       await prisma.profileImg.upsert({
         where: { userId },
-        create: {userId, url: profileImgUrl },
+        create: { userId, url: profileImgUrl },
         update: { url: profileImgUrl },
       });
     }
       // Receive the editable profile user data  from frontend for updates
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: {
-        name,
-        username,
-        email,
-      },
-      include: { 
-        profileImg: true,
-        role: true
-      },
+      data: { name, username, email },
+      include: { profileImg: true, role: true },
     });
 
-    console.log("Updated User:", updatedUser);
+    // console.log("Updated User:", updatedUser); // only for testing
     // Generate a new token and cookie with the updated profile user data
     const token = jwt.sign(
       {
@@ -66,7 +76,7 @@ const updateUser = async (req, res) => {
         email: updatedUser.email,
         username: updatedUser.username,
         role: updatedUser.role.name,
-        profilePicture: updatedUser.profileImg?.url || "/default-avatar.png",
+        profilePicture: updatedUser.profileImg?.url || "/default-avatar.webp",
       },
       process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRATION }
@@ -87,7 +97,7 @@ const updateUser = async (req, res) => {
       message: "Profile updated successfully",
       user: {
         ...updatedUser,
-        profilePicture: updatedUser.profileImg?.url || "/default-avatar.png",
+        profilePicture: updatedUser.profileImg?.url || "/default-avatar.webp",
       },
     });
   } catch (error) {

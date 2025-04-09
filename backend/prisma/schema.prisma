@@ -41,8 +41,8 @@ model User {
 model ProfileImg {
   id      String   @id @default(cuid())
   url     String   // Image URL 
-  user    User?    @relation(fields: [userId], references: [id]) // Relación opcional
-  userId  String?  @unique // Foreign Key with index UNIQUE
+  user    User    @relation(fields: [userId], references: [id]) // Relación opcional
+  userId  String  @unique // Foreign Key with index UNIQUE
 }
 
 model Tool {
