@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import removeConsole from 'vite-plugin-remove-console';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), removeConsole()],
   server: {
@@ -10,18 +9,28 @@ export default defineConfig({
   },
   build: {
     minify: 'terser',
+    cssCodeSplit: false, // deactivate cssCodeSplit for production
     sourcemap: false, // deactivate sourcemaps for production
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          if (id.includes('node_modules')) return 'vendor';
-          if (id.includes('node_modules/react')) return 'vendor-react';
-          if (id.includes('node_modules/react-router-dom')) return 'vendor-react-router-dom';
-          if (id.includes('styled-components')) return 'vendor-styled-components';
-
+          // Critical chunks (react + route)
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'vendor-react';
+          }
+          // 2) Librerías de estilos separadas
+          if (id.includes('node_modules/@emotion') || id.includes('node_modules/styled-components')) {
+            return 'vendor-styles';
+          }
+          // 3) React Router
+          if (id.includes('node_modules/react-router-dom')) {
+            return 'vendor-router';
+          }
+          // Specific chunks
           if (id.includes('UserBurguerMenu')) return 'user-menu';
-          if (id.includes('Dashboard')) return 'dashboard';
-          if (id.includes('AdminPanel')) return 'admin';
+          if (id.includes('AdminPanel') || id.includes('Dashboard')) {
+            return 'lazy-components';
+          }
         },
       }
     },

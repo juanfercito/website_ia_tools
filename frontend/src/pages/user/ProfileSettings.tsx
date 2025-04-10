@@ -16,7 +16,7 @@ const ProfileSettings: React.FC = () => {
     username: 'N/A',
     email: 'N/A',
     role: 'N/A',
-    profileImg: '/default-avatar.png', // Imagen predeterminada
+    profileImg: '/default-avatar.webp', // Imagen predeterminada
   });
 
   const [editableData, setEditableData] = useState<EditableData>({
@@ -49,7 +49,7 @@ const ProfileSettings: React.FC = () => {
           username: data.user.username || 'N/A',
           email: data.user.email || 'N/A',
           role: data.user.role || 'N/A',
-          profileImg: data.user.profilePicture || '/default-avatar.png',
+          profileImg: data.user.profilePicture || '/default-avatar.webp',
         });
 
         // Inicializar los datos editables
@@ -150,7 +150,7 @@ const ProfileSettings: React.FC = () => {
         name: updatedData.user.name,
         username: updatedData.user.username,
         email: updatedData.user.email,
-        profileImg: updatedData.user.profilePicture || '/default-avatar.png', // Actualizar la URL de la imagen
+        profileImg: updatedData.user.profilePicture || '/default-avatar.webp', // Actualizar la URL de la imagen
       });
 
       setIsEditing(false); // Salir del modo de edición
@@ -178,7 +178,7 @@ const ProfileSettings: React.FC = () => {
           alt="Profile"
           className='profileImage'
           onError={(e) => {
-            e.currentTarget.src = '/default-avatar.png'; // Fallback seguro
+            e.currentTarget.src = '/default-avatar.webp'; // Fallback seguro
           }}
         />
         <p>Profile Image</p>

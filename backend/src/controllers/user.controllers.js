@@ -46,10 +46,11 @@ const updateUser = async (req, res) => {
         .toBuffer();
 
         // Generate a safe name and save in storage
-        const safeFileName = `${Date.now()}-${req.file.originalname.replace(/\s+/g, "_")}.webp`;
+        const originalNameNoExt = req.file.originalname.replace(/\.[^/.]+$/, "");
+        const safeFileName = `${Date.now()}-${originalNameNoExt.replace(/\s+/g, "_")}.webp`;
         const uploadPath = path.join(__dirname, "../public/uploads", safeFileName);
 
-        await fs.promises.writeFile(uploadPath, proccessedImgBuffer);
+        await fs.writeFile(uploadPath, proccessedImgBuffer);
 
         profileImgUrl = `http://localhost:3000/uploads/${safeFileName}`;
         console.log("Archivo recibido:", uploadPath);

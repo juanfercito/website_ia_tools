@@ -7,7 +7,7 @@ const UserBurguerMenu = React.lazy(() => import('../../components/UserBurguerMen
 
 const AdminPanel: React.FC = () => {
   const [username, setUsername] = useState<string>(''); // Nombre de usuario autenticado
-  const [profilePicture, setProfilePicture] = useState<string>('/default-avatar.png'); // Foto de perfil
+  const [profilePicture, setProfilePicture] = useState<string>('/default-avatar.webp'); // Foto de perfil
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false); // Estado del menú desplegable
   const navigate = useNavigate();
 
@@ -48,7 +48,7 @@ const AdminPanel: React.FC = () => {
         setProfilePicture(
           isValidUrl(userData.user.profilePicture)
             ? userData.user.profilePicture
-            : '/default-avatar.png'
+            : '/default-avatar.webp'
         );
 
         // Aplicar el modo oscuro
@@ -79,7 +79,7 @@ const AdminPanel: React.FC = () => {
             alt="Profile"
             style={styles.profilePicture}
             onError={(e) => {
-              e.currentTarget.src = 'http://localhost:3000/default-avatar.png';
+              e.currentTarget.src = 'http://localhost:3000/default-avatar.webp';
             }}
           />
             <span style={styles.username}>{username}</span>

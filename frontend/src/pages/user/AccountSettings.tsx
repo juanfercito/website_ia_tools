@@ -1,6 +1,6 @@
 // pages/user/AccountSettings.tsx
 import React, { useState, useEffect } from 'react';
-import '../styles/userSettingsViews.css';
+import '../styles/userSettingsViews.css?inline';
 
 const AccountSettings: React.FC = () => {
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 //import LogoutButton from '../../components/LogoutButton';
 import styles from '../styles/userMainPanel';
 
-const DEFAULT_AVATAR = '/assets/default-avatar.png'; // Asegúrate de que este archivo exista en `public/assets/`
+const DEFAULT_AVATAR = '/assets/default-avatar.webp'; // Asegúrate de que este archivo exista en `public/assets/`
 
 const UserBurguerMenu = React.lazy(() => import('../../components/UserBurguerMenu'));
 
