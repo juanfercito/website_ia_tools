@@ -41,7 +41,7 @@ const updateUser = async (req, res) => {
     if (req.file) {
       // process with sharp
       const proccessedImgBuffer = await sharp(req.file.buffer)
-        .resize(300, 300)
+        .resize(150, 150)
         .webp({ quality: 80 })
         .toBuffer();
 

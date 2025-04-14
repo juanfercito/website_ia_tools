@@ -31,6 +31,10 @@ app.use(helmet({
       "connect-src": ["'self'", "http://localhost:4000"],
     },
   },
+  hsts: {
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+  },
   crossOriginResourcePolicy: { policy: "cross-origin" }, // Adjusting CORP for estatic resources
 }));
 // Custom Security Middleware (CORS)
