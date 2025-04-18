@@ -2,8 +2,9 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import LogoutButton from '../../components/LogoutButton';
 import styles from '../styles/userMainPanel';
+import ProfileImage from '../../components/ProfileImage';
 
-const DEFAULT_AVATAR = '/assets/default-avatar.webp'; // Asegúrate de que este archivo exista en `public/assets/`
+const DEFAULT_AVATAR = '/default-avatar.webp';
 
 const UserBurguerMenu = React.lazy(() => import('../../components/UserBurguerMenu'));
 
@@ -32,11 +33,9 @@ const Dashboard: React.FC = () => {
 
         setUsername(userData.user.username);
         
-        // Usar la URL directa del backend sin modificarla
+        // Usar la URL directa del backend
         const userProfilePic = userData.user.profilePicture || DEFAULT_AVATAR;
-        setProfilePicture(userProfilePic); // URL ya viene completa desde el backend
-
-        console.log("Profile picture URL:", userProfilePic);
+        setProfilePicture(userProfilePic);
 
         const darkModePreference = userData.user.darkMode || false;
         document.body.classList.toggle('dark-mode', darkModePreference);
@@ -59,16 +58,12 @@ const Dashboard: React.FC = () => {
         </div>
         <div style={styles.navbarRight}>
           <div style={styles.userSection}>
-          <img
-            src={`${profilePicture}?v=${Date.now()}`}
-            alt="Profile"
-            style={styles.profilePicture}
-            onError={(e) => {
-              if (!e.currentTarget.src.endsWith(DEFAULT_AVATAR)) {
-                e.currentTarget.src = DEFAULT_AVATAR;
-              }
-            }}
-          />
+            <ProfileImage
+              src={profilePicture}
+              containerSize="small"
+              alt="Profile"
+              className="nav-profile-image"
+            />
             <span style={styles.username}>{username}</span>
             <Suspense fallback={<div>Loading...</div>}>
               <UserBurguerMenu

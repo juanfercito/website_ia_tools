@@ -107,13 +107,12 @@ input:checked + .slider:before {
 
 /* ProfileSetings.tsx */
 .profileSection {
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 .profileImage {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
   margin-bottom: 10px;
 }
 .fieldsContainer {

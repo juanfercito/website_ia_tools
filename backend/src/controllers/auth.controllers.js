@@ -135,15 +135,21 @@ async function allUsers(req, res) {
     if (!user) {
       return res.status(404).json({ status: "error", message: "User not found" });
     }
+
+    // Validate all the fields for permissions
+    if (!user.name || !user.email || !user.username || !user.role) {
+      return res.status(500).json({ status: "error", message: "Incomplete user data in database" });
+    }
+
     // If OK, return the user data dictionary
     const userData ={
       status: "ok",
       user: {
         id: user.id,
-        name: user.name,
-        email: user.email,
-        username: user.username,
-        role: user.role.name,
+        name: user.name || "Unknown",
+        email: user.email || "Unknown",
+        username: user.username || "Unknown",
+        role: user.role.name || "Unknown",
         profilePicture: user.profileImg?.url || "/default-avatar.png",
         darkMode: user.darkMode || false
       },

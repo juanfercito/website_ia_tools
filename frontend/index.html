@@ -1,16 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Website IA Tools - All you need for your projects and daily tasks. Get Started Now! See more about our Products" />
-    <title>Vite + React + TS</title>
-    <link rel="preload" href="/src/pages/styles/userSettingsViews.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="/src/pages/styles/userSettingsViews.css"></noscript>
+    
+    <!-- Preconnect to critical domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Critical styles inlined -->
+    <style>
+      :root {
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        line-height: 1.4;
+        font-weight: 400;
+        color-scheme: light dark;
+        color: rgba(255, 255, 255, 0.87);
+        background-color: #242424;
+        font-size: 16px;
+      }
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+      }
+      #root {
+        width: 100%;
+        min-height: 100vh;
+        padding: 1rem;
+        box-sizing: border-box;
+      }
+      /* Estilos responsivos críticos */
+      @media (max-width: 768px) {
+        :root {
+          font-size: 14px;
+        }
+        #root {
+          padding: 0.5rem;
+        }
+      }
+      /* Estilos críticos para el navbar y contenedor principal */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      @media (max-width: 1200px) {
+        .container {
+          max-width: 100%;
+        }
+      }
+      .nav-profile-image {
+        margin-right: 1rem;
+      }
+      @media (max-width: 480px) {
+        .nav-profile-image {
+          margin-right: 0.5rem;
+        }
+      }
+    </style>
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/src/index.css" as="style">
+    <link rel="preload" href="/src/App.css" as="style">
+    
+    <!-- Non-critical styles loaded asynchronously -->
+    <link rel="stylesheet" href="/src/index.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/src/App.css" media="print" onload="this.media='all'">
+    
+    <!-- Fallback for browsers that don't support preload -->
+    <noscript>
+      <link rel="stylesheet" href="/src/index.css">
+      <link rel="stylesheet" href="/src/App.css">
+    </noscript>
+    
+    <!-- Non-critical resources -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-      <!-- Preconnect to backend -->
-  <link rel="preconnect" href="http://localhost:3000">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>IA Tools</title>
   </head>
   <body>
     <div id="root"></div>

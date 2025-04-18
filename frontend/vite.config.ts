@@ -9,7 +9,7 @@ export default defineConfig({
   },
   build: {
     minify: 'terser',
-    cssCodeSplit: false, // deactivate cssCodeSplit for production
+    cssCodeSplit: true, // Enable CSS code splitting
     sourcemap: false, // deactivate sourcemaps for production
     rollupOptions: {
       output: {
@@ -30,6 +30,10 @@ export default defineConfig({
           if (id.includes('UserBurguerMenu')) return 'user-menu';
           if (id.includes('AdminPanel') || id.includes('Dashboard')) {
             return 'lazy-components';
+          }
+          // CSS chunks
+          if (id.includes('userSettingsViews.css')) {
+            return 'settings-styles';
           }
         },
       }

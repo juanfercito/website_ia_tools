@@ -1,7 +1,10 @@
 // pages/user/ProfileSettings.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import '../styles/userSettingsViews.css';
-import imageCompression from 'browser-image-compression';
+import ProfileImage from '../../components/ProfileImage';
+
+// Lazy load del componente de carga de imágenes
+const ImageUploader = lazy(() => import('../../components/ImageUploader'));
 
 const ProfileSettings: React.FC = () => {
   interface EditableData {
@@ -75,34 +78,9 @@ const ProfileSettings: React.FC = () => {
   };
 
   // Manejar la carga de una nueva imagen de perfil
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageChange = async (file: File) => {
     if (file) {
-      try {
-        // Opciones de compresión
-        const options = {
-          maxSizeMB: 1, // Tamaño máximo de 1 MB
-          maxWidthOrHeight: 1024, // Redimensionar a un máximo de 1024x1024 píxeles
-          useWebWorker: true, // Usar un worker para mejorar el rendimiento
-        };
-
-        // Comprimir la imagen
-        const compressedBlob = await imageCompression(file, options);
-
-        // Convertir el Blob comprimido en un objeto File
-        const compressedFile = new File(
-          [compressedBlob],
-          file.name, // Mantener el nombre original del archivo
-          { type: file.type } // Mantener el tipo MIME original
-        );
-
-        // Actualizar el estado con el archivo comprimido
-        setEditableData({ ...editableData, profileImg: compressedFile });
-        console.log("Imagen comprimida asignada:", compressedFile); // Depuración
-      } catch (error) {
-        console.error("Error compressing image:", error);
-        alert("Failed to compress image");
-      }
+      setEditableData({ ...editableData, profileImg: file });
     }
   };
 
@@ -167,28 +145,23 @@ const ProfileSettings: React.FC = () => {
 
       {/* Imagen de perfil */}
       <div className='profileSection'>
-        <img
+        <ProfileImage
           src={
             typeof editableData.profileImg === 'string'
-              ? `${editableData.profileImg}?v=${Date.now()}` // Añadir parámetro de consulta para evitar caché
+              ? editableData.profileImg
               : userData.profileImg.startsWith('http')
-              ? `${userData.profileImg}?v=${Date.now()}`
+              ? userData.profileImg
               : URL.createObjectURL(editableData.profileImg)
           }
+          containerSize="large"
           alt="Profile"
           className='profileImage'
-          onError={(e) => {
-            e.currentTarget.src = '/default-avatar.webp'; // Fallback seguro
-          }}
         />
         <p>Profile Image</p>
         {isEditing && (
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ marginTop: '10px' }}
-          />
+          <Suspense fallback={<div>Loading image uploader...</div>}>
+            <ImageUploader onImageSelect={handleImageChange} />
+          </Suspense>
         )}
       </div>
 

@@ -2,12 +2,15 @@ import React, { Suspense, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import LogoutButton from '../../components/LogoutButton';
 import styles from '../styles/userMainPanel';
+import ProfileImage from '../../components/ProfileImage';
+
+const DEFAULT_AVATAR = '/default-avatar.webp';
 
 const UserBurguerMenu = React.lazy(() => import('../../components/UserBurguerMenu'));
 
 const AdminPanel: React.FC = () => {
   const [username, setUsername] = useState<string>(''); // Nombre de usuario autenticado
-  const [profilePicture, setProfilePicture] = useState<string>('/default-avatar.webp'); // Foto de perfil
+  const [profilePicture, setProfilePicture] = useState<string>(DEFAULT_AVATAR); // Foto de perfil
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false); // Estado del menú desplegable
   const navigate = useNavigate();
 
@@ -33,23 +36,10 @@ const AdminPanel: React.FC = () => {
         }
 
         setUsername(userData.user.username);
-
-        // Validar y asignar la URL de la imagen de perfil
-        const isValidUrl = (url: string): boolean => {
-          try {
-            new URL(url); // Intenta crear un objeto URL
-            return true;
-          } catch (error) {
-            console.error('Invalid URL:', url);
-            return false;
-          }
-        };
-
-        setProfilePicture(
-          isValidUrl(userData.user.profilePicture)
-            ? userData.user.profilePicture
-            : '/default-avatar.webp'
-        );
+        
+        // Usar la URL directa del backend
+        const userProfilePic = userData.user.profilePicture || DEFAULT_AVATAR;
+        setProfilePicture(userProfilePic);
 
         // Aplicar el modo oscuro
         const darkModePreference = userData.user.darkMode || false;
@@ -74,21 +64,19 @@ const AdminPanel: React.FC = () => {
         </div>
         <div style={styles.navbarRight}>
           <div style={styles.userSection}>
-          <img
-            src={`${profilePicture}?v=${Date.now()}`}
-            alt="Profile"
-            style={styles.profilePicture}
-            onError={(e) => {
-              e.currentTarget.src = 'http://localhost:3000/default-avatar.webp';
-            }}
-          />
+            <ProfileImage
+              src={profilePicture}
+              containerSize="small"
+              alt="Profile"
+              className="nav-profile-image"
+            />
             <span style={styles.username}>{username}</span>
             <Suspense fallback={<div>Loading...</div>}>
               <UserBurguerMenu
-              isMenuOpen={isMenuOpen}
-              setIsMenuOpen={setIsMenuOpen}
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
               />
-              </Suspense>
+            </Suspense>
           </div>
         </div>
       </nav>
