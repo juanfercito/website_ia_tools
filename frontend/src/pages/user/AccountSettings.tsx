@@ -123,10 +123,7 @@ const AccountSettings: React.FC = () => {
         <div className="passwordFormContainer">
           <div className="passwordChangeRow">
             <label htmlFor="current-password" className="sr-only">Current Password</label>
-            <label htmlFor="current-password" className="sr-only">Current Password</label>
             <input
-              id="current-password"
-              name="current-password"
               id="current-password"
               name="current-password"
               type="password"
@@ -139,10 +136,7 @@ const AccountSettings: React.FC = () => {
           </div>
           <div className="passwordChangeRow">
             <label htmlFor="new-password" className="sr-only">New Password</label>
-            <label htmlFor="new-password" className="sr-only">New Password</label>
             <input
-              id="new-password"
-              name="new-password"
               id="new-password"
               name="new-password"
               type="password"
@@ -167,11 +161,8 @@ const AccountSettings: React.FC = () => {
       {/* Opción: Modo oscuro */}
       <div className="settingRow">
         <label htmlFor="dark-mode">Dark Mode:</label>
-        <label htmlFor="dark-mode">Dark Mode:</label>
         <label className="switch">
           <input
-            id="dark-mode"
-            name="dark-mode"
             id="dark-mode"
             name="dark-mode"
             type="checkbox"
@@ -186,14 +177,7 @@ const AccountSettings: React.FC = () => {
       {/* Opción: Notificaciones */}
       <div className="settingRow">
         <label htmlFor="notifications">Enable Notifications:</label>
-        <label htmlFor="notifications">Enable Notifications:</label>
         <label className="switch">
-          <input
-            id="notifications"
-            name="notifications"
-            type="checkbox"
-            disabled
-          />
           <input
             id="notifications"
             name="notifications"
@@ -206,12 +190,6 @@ const AccountSettings: React.FC = () => {
 
       {/* Opción: Eliminar cuenta */}
       <div className="settingRow">
-        <label htmlFor="delete-account">Delete Account:</label>
-        <button
-          id="delete-account"
-          className="deleteButton"
-          disabled
-        >
         <label htmlFor="delete-account">Delete Account:</label>
         <button
           id="delete-account"

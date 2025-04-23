@@ -19,11 +19,17 @@
         color: rgba(255, 255, 255, 0.87);
         background-color: #242424;
         font-size: 16px;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
       body {
         margin: 0;
         min-width: 320px;
         min-height: 100vh;
+        display: flex;
+        place-items: center;
       }
       #root {
         width: 100%;
@@ -61,25 +67,42 @@
           margin-right: 0.5rem;
         }
       }
+      /* Critical button styles */
+      button {
+        border-radius: 8px;
+        border: 1px solid transparent;
+        padding: 0.6em 1.2em;
+        font-size: 1em;
+        font-weight: 500;
+        font-family: inherit;
+        background-color: #1a1a1a;
+        cursor: pointer;
+        transition: border-color 0.25s;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          color: #213547;
+          background-color: #ffffff;
+        }
+        button {
+          background-color: #f9f9f9;
+        }
+      }
     </style>
-    
-    <!-- Preload critical assets -->
-    <link rel="preload" href="/src/index.css" as="style">
-    <link rel="preload" href="/src/App.css" as="style">
-    
-    <!-- Non-critical styles loaded asynchronously -->
-    <link rel="stylesheet" href="/src/index.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="/src/App.css" media="print" onload="this.media='all'">
-    
-    <!-- Fallback for browsers that don't support preload -->
-    <noscript>
-      <link rel="stylesheet" href="/src/index.css">
-      <link rel="stylesheet" href="/src/App.css">
-    </noscript>
     
     <!-- Non-critical resources -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <title>IA Tools</title>
+    
+    <!-- Load non-critical CSS asynchronously -->
+    <link rel="stylesheet" href="/src/index.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/src/App.css" media="print" onload="this.media='all'">
+    
+    <!-- Fallback for browsers that don't support media=print trick -->
+    <noscript>
+      <link rel="stylesheet" href="/src/index.css">
+      <link rel="stylesheet" href="/src/App.css">
+    </noscript>
   </head>
   <body>
     <div id="root"></div>
