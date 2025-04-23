@@ -1,26 +1,48 @@
-# 🚀 Website IA Tools
+# �� Website IA Tools
 
-**License**  
-**PRs Welcome**
+<div align="center">
 
-Welcome to **Website IA Tools**, a web application designed to showcase popular Artificial Intelligence tools, allow users to interact with them, and track their usage. This project is built using modern technologies like **React**, **Node.js**, **Express**, and **Prisma**, ensuring scalability, performance, and ease of use.
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
----
+</div>
 
-## 📌 Table of Contents
-- [Overview](#-overview)
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
+<div class="documentation-wrapper" style="display: flex;">
+
+<nav class="sidebar" style="position: fixed; top: 0; left: 0; width: 280px; height: 100vh; overflow-y: auto; padding: 20px; border-right: 1px solid #e1e4e8; background-color: #f6f8fa;">
+
+## Navigation
+
+- [🌟 Overview](#-overview)
+- [✨ Features](#-features)
+  - [Core Features](#core-features)
+  - [Optional Features](#optional-features)
+- [💻 Tech Stack](#-tech-stack)
+  - [Frontend](#frontend)
+  - [Backend](#backend)
+  - [DevOps](#devops)
+- [📂 Project Structure](#-project-structure)
+  - [Main Folder](#main-folder)
+  - [Backend Folder](#backend-folder)
+  - [Frontend Folder](#frontend-folder)
+- [🚀 Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-  - [Usage](#-usage)
-  - [API Endpoints](#-api-endpoints)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Acknowledgments](#-acknowledgments)
-- [Screenshots (Optional)](#-screenshots-optional)
+  - [Development](#development)
+  - [Production](#production)
+- [🛠️ Usage](#️-usage)
+  - [Backend](#backend-1)
+  - [Frontend](#frontend-1)
+- [🌐 API Endpoints](#-api-endpoints)
+- [🤝 Contributing](#-contributing)
+- [📜 License](#-license)
+- [🙏 Acknowledgments](#-acknowledgments)
+
+</nav>
+
+<main style="margin-left: 300px; padding: 20px; max-width: 800px;">
+
+Welcome to **Website IA Tools**, a web application designed to showcase popular Artificial Intelligence tools, allow users to interact with them, and track their usage. This project is built using modern technologies like **React**, **Node.js**, **Express**, and **Prisma**, ensuring scalability, performance, and ease of use.
 
 ---
 
@@ -207,6 +229,15 @@ pnpm run dev
 ```
 
 Start the Production Server
+
+Before starting the production server, you need to build the frontend:
+```bash
+cd frontend
+pnpm run build
+cd ..  # Return to root directory
+```
+
+Then start the production server:
 ```bash
 pnpm start
 ```
@@ -215,10 +246,16 @@ pnpm start
 ### Backend
 The backend runs on http://localhost:3000 by default on both dev and production mode.
 Use tools like Postman or Insomnia to test the APIs.
+
 ### Frontend
+#### Development Mode
 The frontend runs on http://localhost:4000 by default, but you can configure it by your preferences.
-### Frontend on Production Mode
-This server runs on http://localhost:4173 by default, but you can configure it by your preferences.
+
+#### Production Mode
+After building, the frontend will be served through the backend server at http://localhost:3000.
+The build process optimizes all assets and prepares them for production deployment.
+
+Important: Always remember to rebuild the frontend (`pnpm run build`) after making changes if you want to see them reflected in production mode.
 
 Open the URL in your browser to interact with the app.
 ## 🌐 API Endpoints
@@ -228,7 +265,7 @@ Open the URL in your browser to interact with the app.
 /tools/favorites (GET): Fetch user's favorite tools.
 /tools/reviews (POST): Add a review for a tool.
 ## 🤝 Contributing
-We welcome contributions from the community! Here’s how you can help:
+We welcome contributions from the community! Here's how you can help:
 
 Fork the repository.
 ```bash
@@ -247,7 +284,7 @@ Push to the branch:
 git push origin feature/YourFeatureName
 ```
 Open a pull request.
-For major changes, please open an issue first to discuss what you’d like to change.
+For major changes, please open an issue first to discuss what you'd like to change.
 
 ## 📜 License
 This project is licensed under the MIT License. See the LICENSE file for details.
@@ -255,3 +292,50 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## 🙏 Acknowledgments
 Inspired by the growing need for centralized AI tool discovery platforms.
 Built with ❤️ using modern web technologies.
+
+</main>
+
+</div>
+
+<style>
+.documentation-wrapper {
+    min-height: 100vh;
+}
+
+.sidebar {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.sidebar a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    text-decoration: underline;
+}
+
+main {
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .documentation-wrapper {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e1e4e8;
+    }
+    
+    main {
+        margin-left: 0;
+        padding: 20px;
+    }
+}
+</style>
