@@ -107,8 +107,9 @@ const AccountSettings: React.FC = () => {
 
       {/* Change Password Section */}
       <div className="settingRow">
-        <label>Change Password:</label>
+        <label htmlFor="change-password">Change Password:</label>
         <button
+          id="change-password"
           className="actionButton"
           onClick={() => setIsPasswordSectionOpen(true)}
           disabled={isLoading}
@@ -121,7 +122,10 @@ const AccountSettings: React.FC = () => {
       {isPasswordSectionOpen && (
         <div className="passwordFormContainer">
           <div className="passwordChangeRow">
+            <label htmlFor="current-password" className="sr-only">Current Password</label>
             <input
+              id="current-password"
+              name="current-password"
               type="password"
               placeholder="Current Password"
               value={currentPassword}
@@ -131,7 +135,10 @@ const AccountSettings: React.FC = () => {
             />
           </div>
           <div className="passwordChangeRow">
+            <label htmlFor="new-password" className="sr-only">New Password</label>
             <input
+              id="new-password"
+              name="new-password"
               type="password"
               placeholder="New Password (min 8 characters)"
               value={newPassword}
@@ -153,9 +160,11 @@ const AccountSettings: React.FC = () => {
 
       {/* Opción: Modo oscuro */}
       <div className="settingRow">
-        <label>Dark Mode:</label>
+        <label htmlFor="dark-mode">Dark Mode:</label>
         <label className="switch">
           <input
+            id="dark-mode"
+            name="dark-mode"
             type="checkbox"
             checked={userData.darkMode}
             onChange={toggleDarkMode}
@@ -167,17 +176,26 @@ const AccountSettings: React.FC = () => {
 
       {/* Opción: Notificaciones */}
       <div className="settingRow">
-        <label>Enable Notifications:</label>
+        <label htmlFor="notifications">Enable Notifications:</label>
         <label className="switch">
-          <input type="checkbox" disabled />
+          <input
+            id="notifications"
+            name="notifications"
+            type="checkbox"
+            disabled
+          />
           <span className="slider"></span>
         </label>
       </div>
 
       {/* Opción: Eliminar cuenta */}
       <div className="settingRow">
-        <label>Delete Account:</label>
-        <button className="deleteButton" disabled>
+        <label htmlFor="delete-account">Delete Account:</label>
+        <button
+          id="delete-account"
+          className="deleteButton"
+          disabled
+        >
           Delete Account
         </button>
       </div>
