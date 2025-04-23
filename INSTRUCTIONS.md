@@ -1,4 +1,4 @@
-# �� Website IA Tools
+# 🚀 Website IA Tools
 
 <div align="center">
 
@@ -7,44 +7,78 @@
 
 </div>
 
-<div class="documentation-wrapper" style="display: flex;">
+<details open>
+<summary><h2>📑 Documentation Index</h2></summary>
 
-<nav class="sidebar" style="position: fixed; top: 0; left: 0; width: 280px; height: 100vh; overflow-y: auto; padding: 20px; border-right: 1px solid #e1e4e8; background-color: #f6f8fa;">
-
-## Navigation
-
+### Quick Links
 - [🌟 Overview](#-overview)
 - [✨ Features](#-features)
-  - [Core Features](#core-features)
-  - [Optional Features](#optional-features)
 - [💻 Tech Stack](#-tech-stack)
-  - [Frontend](#frontend)
-  - [Backend](#backend)
-  - [DevOps](#devops)
 - [📂 Project Structure](#-project-structure)
-  - [Main Folder](#main-folder)
-  - [Backend Folder](#backend-folder)
-  - [Frontend Folder](#frontend-folder)
 - [🚀 Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Development](#development)
-  - [Production](#production)
 - [🛠️ Usage](#️-usage)
-  - [Backend](#backend-1)
-  - [Frontend](#frontend-1)
 - [🌐 API Endpoints](#-api-endpoints)
 - [🤝 Contributing](#-contributing)
 - [📜 License](#-license)
 - [🙏 Acknowledgments](#-acknowledgments)
 
-</nav>
+### Detailed Navigation
 
-<main style="margin-left: 300px; padding: 20px; max-width: 800px;">
+<details>
+<summary><b>Features</b></summary>
 
-Welcome to **Website IA Tools**, a web application designed to showcase popular Artificial Intelligence tools, allow users to interact with them, and track their usage. This project is built using modern technologies like **React**, **Node.js**, **Express**, and **Prisma**, ensuring scalability, performance, and ease of use.
+- [Core Features](#core-features)
+  - User Authentication
+  - Tool Management
+  - Favorites
+  - Usage Logs
+  - Reviews
+- [Optional Features](#optional-features)
+  - Premium Tools
+  - Notifications
+  - Analytics Dashboard
+</details>
+
+<details>
+<summary><b>Tech Stack</b></summary>
+
+- [Frontend Technologies](#frontend)
+  - React
+  - Vite
+  - Axios
+  - UI Frameworks
+- [Backend Technologies](#backend)
+  - Node.js + Express
+  - Prisma
+  - Databases
+- [DevOps Tools](#devops)
+  - pnpm
+  - GitHub Actions
+  - Deployment
+</details>
+
+<details>
+<summary><b>Project Structure</b></summary>
+
+- [Main Folder Structure](#main-folder)
+- [Backend Organization](#backend-folder)
+- [Frontend Organization](#frontend-folder)
+</details>
+
+<details>
+<summary><b>Setup & Development</b></summary>
+
+- [Prerequisites](#prerequisites)
+- [Installation Steps](#installation)
+- [Development Mode](#development)
+- [Production Mode](#production)
+</details>
+
+</details>
 
 ---
+
+Welcome to **Website IA Tools**, a web application designed to showcase popular Artificial Intelligence tools, allow users to interact with them, and track their usage. This project is built using modern technologies like **React**, **Node.js**, **Express**, and **Prisma**, ensuring scalability, performance, and ease of use.
 
 ## 🌟 Overview
 
@@ -56,8 +90,6 @@ The **Website IA Tools** is a full-stack web application that allows users to:
 - **Access premium features** based on user roles (Admin, Premium, Free).
 
 This platform is ideal for developers, researchers, and enthusiasts who want to stay updated with the latest AI tools and trends.
-
----
 
 ## ✨ Features
 
@@ -72,8 +104,6 @@ This platform is ideal for developers, researchers, and enthusiasts who want to 
 - **Premium Tools**: Access exclusive tools for Premium users.
 - **Notifications**: Notify users about updates or new tools.
 - **Analytics Dashboard**: Visualize usage statistics and trends.
-
----
 
 ## 💻 Tech Stack
 
@@ -292,50 +322,3 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## 🙏 Acknowledgments
 Inspired by the growing need for centralized AI tool discovery platforms.
 Built with ❤️ using modern web technologies.
-
-</main>
-
-</div>
-
-<style>
-.documentation-wrapper {
-    min-height: 100vh;
-}
-
-.sidebar {
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.sidebar a {
-    color: #0366d6;
-    text-decoration: none;
-}
-
-.sidebar a:hover {
-    text-decoration: underline;
-}
-
-main {
-    line-height: 1.6;
-}
-
-@media (max-width: 768px) {
-    .documentation-wrapper {
-        flex-direction: column;
-    }
-    
-    .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid #e1e4e8;
-    }
-    
-    main {
-        margin-left: 0;
-        padding: 20px;
-    }
-}
-</style>
