@@ -9,8 +9,8 @@ export default defineConfig({
   },
   build: {
     minify: 'terser',
-    cssCodeSplit: true, // Enable CSS code splitting
-    sourcemap: false, // deactivate sourcemaps for production
+    cssCodeSplit: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
@@ -18,11 +18,11 @@ export default defineConfig({
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'vendor-react';
           }
-          // 2) Librerías de estilos separadas
+          // Style libraries
           if (id.includes('node_modules/@emotion') || id.includes('node_modules/styled-components')) {
             return 'vendor-styles';
           }
-          // 3) React Router
+          // React Router
           if (id.includes('node_modules/react-router-dom')) {
             return 'vendor-router';
           }
@@ -31,12 +31,36 @@ export default defineConfig({
           if (id.includes('AdminPanel') || id.includes('Dashboard')) {
             return 'lazy-components';
           }
-          // CSS chunks
+          // CSS chunks by feature
+          if (id.includes('UserMainPanel.css')) {
+            return 'layout-styles';
+          }
           if (id.includes('userSettingsViews.css')) {
             return 'settings-styles';
           }
+          if (id.includes('authViews.css')) {
+            return 'auth-styles';
+          }
         },
+        assetFileNames: (assetInfo) => {
+          const name = assetInfo.name || '';
+          if (name.endsWith('.css')) {
+            // Group CSS files by feature
+            if (name.includes('UserMainPanel')) {
+              return 'assets/css/layout/[name]-[hash][extname]';
+            }
+            if (name.includes('userSettingsViews')) {
+              return 'assets/css/settings/[name]-[hash][extname]';
+            }
+            if (name.includes('authViews')) {
+              return 'assets/css/auth/[name]-[hash][extname]';
+            }
+            return 'assets/css/[name]-[hash][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        }
       }
     },
+    cssMinify: true,
   }
 });

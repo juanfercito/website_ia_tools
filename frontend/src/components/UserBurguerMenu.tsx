@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import LogoutButton from './LogoutButton';
-import styles from '../pages/styles/userMainPanel';
+import '../pages/styles/UserMainPanel.css';
 
 interface UserBurguerMenuProps {
   isMenuOpen: boolean;
@@ -17,8 +17,7 @@ const UserBurguerMenu: React.FC<UserBurguerMenuProps> = ({
     <>
       {/* Botón del menú */}
       <button
-        className="menu-button"
-        style={styles.menuButton}
+        className="menuButton"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
         ☰
@@ -26,11 +25,11 @@ const UserBurguerMenu: React.FC<UserBurguerMenuProps> = ({
 
       {/* Menú desplegable */}
       {isMenuOpen && (
-        <div className='dropdown-menu' style={styles.dropdownMenu}>
-          <Link to="/profile-settings" style={styles.dropdownItem}>
+        <div className='dropdownMenu'>
+          <Link to="/profile-settings" className='dropdownItem'>
             Profile
           </Link>
-          <Link to="/account-settings" style={styles.dropdownItem}>
+          <Link to="/account-settings" className='dropdownItem'>
             Settings
           </Link>
           <LogoutButton />

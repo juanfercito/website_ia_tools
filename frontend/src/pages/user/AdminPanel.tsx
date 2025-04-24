@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import LogoutButton from '../../components/LogoutButton';
-import styles from '../styles/userMainPanel';
+import '../styles/UserMainPanel.css';
 import ProfileImage from '../../components/ProfileImage';
 
 const DEFAULT_AVATAR = '/default-avatar.webp';
@@ -56,21 +56,21 @@ const AdminPanel: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div style={styles}>
+    <div className="mainLayout">
       {/* Navbar */}
-      <nav style={styles.navbar}>
-        <div style={styles.navbarLeft}>
-          <span style={styles.logo}>My IA Tools</span>
+      <nav className="mainNavbar">
+        <div className="navbarLeft">
+          <span className="logo">My IA Tools</span>
         </div>
-        <div style={styles.navbarRight}>
-          <div style={styles.userSection}>
+        <div className="navbarRight">
+          <div className="userSection">
             <ProfileImage
               src={profilePicture}
               containerSize="small"
               alt="Profile"
               className="nav-profile-image"
             />
-            <span style={styles.username}>{username}</span>
+            <span className="username">{username}</span>
             <Suspense fallback={<div>Loading...</div>}>
               <UserBurguerMenu
                 isMenuOpen={isMenuOpen}
@@ -82,7 +82,7 @@ const AdminPanel: React.FC = () => {
       </nav>
 
       {/* Contenido principal */}
-      <div style={styles.content}>
+      <div className="mainContent">
         <h1>Welcome to your Administration Panel</h1>
         <p>This is where you can view all the app activity.</p>
       </div>
