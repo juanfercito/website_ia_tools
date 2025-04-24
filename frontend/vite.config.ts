@@ -14,17 +14,17 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Critical chunks (react + route)
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
-            return 'vendor-react';
+          // React core functionality
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+            return 'react-core';
+          }
+          // React hooks and utilities
+          if (id.includes('node_modules/react-router') || id.includes('node_modules/react/jsx-runtime')) {
+            return 'react-utils';
           }
           // Style libraries
           if (id.includes('node_modules/@emotion') || id.includes('node_modules/styled-components')) {
             return 'vendor-styles';
-          }
-          // React Router
-          if (id.includes('node_modules/react-router-dom')) {
-            return 'vendor-router';
           }
           // Specific chunks
           if (id.includes('UserBurguerMenu')) return 'user-menu';
@@ -62,5 +62,16 @@ export default defineConfig({
       }
     },
     cssMinify: true,
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
+      },
+      mangle: true,
+      format: {
+        comments: false
+      }
+    }
   }
 });
