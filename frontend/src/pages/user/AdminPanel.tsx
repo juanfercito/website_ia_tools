@@ -83,7 +83,7 @@ const AdminPanel: React.FC = () => {
 
       {/* Contenido principal */}
       <div className="mainContent">
-        <h1>Welcome to your Administration Panel</h1>
+        <h2>Welcome to your Administration Panel</h2>
         <p>This is where you can view all the app activity.</p>
       </div>
     </div>

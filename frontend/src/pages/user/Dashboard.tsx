@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
       setIsMenuOpen={setIsMenuOpen}
     >
       <div className="mainContent">
-        <h1>Welcome, {user.username}!</h1>
+        <h2>Welcome, {user.username}!</h2>
         <p>This is your dashboard. Here you can manage your account and access your tools.</p>
       </div>
     </UserLayout>
