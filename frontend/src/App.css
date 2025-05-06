@@ -6,7 +6,7 @@
 
 /* Global Application Styles */
 body {
-  background: linear-gradient(135deg, #a8d8ff, #ffffff);
+  background: linear-gradient(135deg, #8bc9fc, #ffffff, #8bc9fc);
   color: #000000;
   transition: all 0.3s ease;
   background-size: cover;
