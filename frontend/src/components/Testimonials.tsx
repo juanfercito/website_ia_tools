@@ -6,6 +6,7 @@ const TestimonialsContainer = styled.div`
   background: #1a1a1a;
   padding: 4rem 2rem;
   border-radius: 10px;
+  width: 100%;
 `;
 
 const Testimonial = styled.div`

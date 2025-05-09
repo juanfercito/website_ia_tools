@@ -9,6 +9,7 @@ const CTABanner = styled.div`
   border-radius: 10px;
   text-align: center;
   margin: 4rem 0;
+  width: 100%;
 `;
 
 const CTAButton = styled.a`

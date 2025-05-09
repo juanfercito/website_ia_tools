@@ -8,7 +8,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](INSTRUCTIONS.md#-contributing)
 
 <a href="INSTRUCTIONS.md">
-  <img src="https://github-production-user-asset-6210df.s3.amazonaws.com/17334377/254500419-99678a3e-c7d2-4133-9bf1-7b6bff4a2117.png" alt="Website IA Tools Banner" width="800"/>
+  <img src="/website-ia-tools-image.webp" alt="Website IA Tools Banner" width="800"/>
 </a>
 
 ### 🎯 Discover, Explore, and Master AI Tools in One Place

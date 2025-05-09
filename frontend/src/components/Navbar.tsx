@@ -40,6 +40,9 @@ const styles = {
     backgroundColor: '#007BFF',
     color: '#fff',
     borderRadius: '6px',
+    maxWidth: '1280px',
+    marginBottom: '2rem',
+    width: '100%',
   },
   logo: {
     fontSize: '1.5rem',

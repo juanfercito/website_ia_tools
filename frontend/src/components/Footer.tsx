@@ -12,6 +12,7 @@ const FooterContainer = styled.footer`
   align-items: center;
   gap: 2rem;
   border-radius: 12px;
+  width: 100%;
 `;
 
 const SocialMediaContainer = styled.div`

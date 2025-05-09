@@ -1,12 +1,11 @@
 import React, { Suspense } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 
 // styles
 import './App.css';
 
 // components
-import Navbar from './components/Navbar';
 
 // Lazy load pages
 const Login = React.lazy(() => import('./pages/auth/Login'));
@@ -19,13 +18,10 @@ const AccountSettings = React.lazy(() => import('./pages/user/AccountSettings'))
 
 
 const App: React.FC = () => {
-  const location = useLocation();
-  // Show Navbar only on the home page
-  const shouldShowNavbar = location.pathname === '/';
+
 
   return (
     <>
-      {shouldShowNavbar && <Navbar />}
       <Suspense fallback={<div className='loading'>Loading...</div>}>
       <Routes>
         <Route path="/" element={<Home />} />
